@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/widgets/product_detail_column.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
+import '../controllers/products_page_controller.dart';
+import '../models/products_list_model.dart';
 import '../routes/route_helper.dart';
 import '../utils/app_colors.dart';
 import '../utils/dimensions.dart';
@@ -10,26 +13,22 @@ import 'big_text.dart';
 
 class PagerViewScreen extends StatefulWidget {
 
-  String category;
-  String productName;
+  String product_category;
 
   PagerViewScreen({super.key,
-    required this.category,
-    required this.productName
+    required this.product_category
   });
 
   @override
-  State<PagerViewScreen> createState() => _PagerViewScreenState(category: this.category,productName: this.productName);
+  State<PagerViewScreen> createState() => _PagerViewScreenState(product_category: this.product_category);
 }
 
 class _PagerViewScreenState extends State<PagerViewScreen> {
 
-  String category;
-  String productName;
+  String product_category;
 
   _PagerViewScreenState({
-      required this.category,
-      required this.productName
+    required this.product_category
   });
 
   PageController pageController = PageController(viewportFraction: 0.85);
@@ -46,6 +45,7 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
         _currPageValue = pageController.page!;
       });
     });
+    _loadResources(product_category);
   }
 
   @override
@@ -60,46 +60,50 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
-      children: [
-        BigText(text: category,size: Dimensions.font16,color: AppColors.himalayaGrey,),
-        SizedBox(
-          height: Dimensions.height10,
-        ),
-        Container(
-          color: AppColors.himalayaWhite,
-          height: Dimensions.pageView,
-          child: PageView.builder(
-              controller: pageController,
-              itemCount: 6,
-              itemBuilder: (context, index){
-                return GestureDetector(
-                    onTap: (){
-                      Get.toNamed(RouteHelper.getProductDetails(index,"home"));
-                    },
-                    child: _buildPageItem(index)
-                );
-              }
+    return GetBuilder<ProductPagerViewController>(builder: (controller){
+      return !controller.isLoaded[product_category]! ?
+      Column(
+        children: [
+          BigText(text: product_category,size: Dimensions.font16,color: AppColors.himalayaGrey,),
+          SizedBox(
+            height: Dimensions.height10,
           ),
-        ),
-        DotsIndicator(
-          dotsCount: 6,
-          position: _currPageValue.round(),
-          decorator: DotsDecorator(
-            color: Colors.grey,
-            activeColor: AppColors.himalayaBlue,
-            size: const Size.square(9.0),
-            activeSize: const Size(18.0, 9.0),
-            activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          Container(
+            color: AppColors.himalayaWhite,
+            height: Dimensions.pageView,
+            child: PageView.builder(
+                controller: pageController,
+                itemCount: controller.productMap[product_category]!.length,
+                itemBuilder: (context, index){
+                  return GestureDetector(
+                      onTap: (){
+                        Get.toNamed(RouteHelper.getProductDetails(index.toString(),product_category));
+                      },
+                      child: _buildPageItem(index,controller.productMap[product_category]![index])
+                  );
+                }
+            ),
           ),
-        ),
-        SizedBox(height: Dimensions.height20,)
-      ],
-    );
+          DotsIndicator(
+            dotsCount: controller.productMap[product_category]!.length,
+            position: _currPageValue.round(),
+            decorator: DotsDecorator(
+              color: Colors.grey,
+              activeColor: AppColors.himalayaBlue,
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+            ),
+          ),
+          SizedBox(height: Dimensions.height20,)
+        ],
+      ) :
+      CircularProgressIndicator(color: AppColors.himalayaBlue,backgroundColor: Colors.white,);
+    });
 
   }
 
-  Widget _buildPageItem(int index) {
+  Widget _buildPageItem(int index,ProductModel product) {
 
     Matrix4 matrix = new Matrix4.identity();
 
@@ -132,7 +136,7 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
                   //color: index.isEven?Color(0xFF69c5df):Color(0xFF9294cc),
                   image: DecorationImage(
                       image: NetworkImage(
-                          "https://firebasestorage.googleapis.com/v0/b/kapitaltaskmanager.appspot.com/o/delivery_app%2Fimagen1.jpg?alt=media&token=09662d0d-5c80-4711-96b8-6887400f3569"
+                          product.productImage!
                       ),
                       fit: BoxFit.cover
                   )
@@ -164,7 +168,7 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
               ),
               child: Container(
                   padding: EdgeInsets.only(top: Dimensions.height10,left: Dimensions.width15,right: Dimensions.width15),
-                  child: ColumnProductDetail(text: productName,)
+                  child: ColumnProductDetail(text: product.productName!,starts: product.productStars!,)
               ),
             ),
           )
@@ -172,4 +176,9 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
       ),
     );
   }
+
+  Future<void> _loadResources(String product_category) async{
+    await Get.find<ProductPagerViewController>().getProductsListByCategory(product_category);
+  }
+
 }

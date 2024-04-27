@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:himalayastoreapp/pages/home/home_page.dart';
 import 'package:himalayastoreapp/pages/product/product_detail.dart';
 
+import '../models/products_list_model.dart';
 import '../pages/splash/splash_page.dart';
 
 class RouteHelper{
@@ -14,7 +15,7 @@ class RouteHelper{
 
   static String getSplash()=>'$splash';
   static String getHome()=>'$home';
-  static String getProductDetails(int pageId,String page)=>'$productDetails?pageId=$pageId&page=$page';
+  static String getProductDetails(String index,String product_category)=>'$productDetails?index=$index&product_category=$product_category';
 
 
   static List<GetPage> routes =[
@@ -23,9 +24,9 @@ class RouteHelper{
     GetPage(
         name: productDetails,
         page: (){
-          var pageId = Get.parameters['pageId'];
-          var page = Get.parameters['page'];
-          return ProductDetailScreen(pageId: int.parse(pageId!),page: page!,);
+          var index = Get.parameters['index'];
+          var product_category = Get.parameters['product_category'];
+          return ProductDetailScreen(index: int.parse(index!),product_category: product_category!);
         },
         transition: Transition.circularReveal
     ),

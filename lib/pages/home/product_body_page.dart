@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/widgets/big_text.dart';
 import 'package:himalayastoreapp/widgets/pager_widget.dart';
 
@@ -16,13 +18,12 @@ class _ProductsBodyScreenState extends State<ProductsBodyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        PagerViewScreen(category: "ACEITES Y MANTEQUILLAS",productName: "Aceite de Ajonjoli x 500 ML"),
-        PagerViewScreen(category: "FRUTOS SECOS GRANOS Y DESHIDRATADOS",productName: "Almendra Entera X 125 Grs"),
-        PagerViewScreen(category: "ESPECIAS, CONDIMENTOS y AROMATICAS",productName: "Achiote En Grano x 125 Gr "),
-        PagerViewScreen(category: " CANNABIS MEDICINAL Y DERIVADOS",productName: " Alcohol Cannabico Green Oil x 120 ML"),
-      ],
-    );
+    return GetBuilder<ProductsPageController>(builder: (controller){
+      return Column(
+        children: List.generate(controller.productsCategoriesList.length, (index){
+          return PagerViewScreen(product_category: controller.productsCategoriesList[index].productCategory!);
+        })
+      );
+    });
   }
 }

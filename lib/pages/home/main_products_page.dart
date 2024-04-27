@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/pages/home/product_body_page.dart';
 
+import '../../controllers/products_pager_view_controller.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
 import '../../widgets/big_text.dart';
@@ -73,6 +76,8 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
   }
 
   Future<void> _loadResources() async{
+
+    //await Get.find<ProductsPageController>().getProductsCategoriesList();
 
   }
 

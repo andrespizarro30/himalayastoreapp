@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
+import 'package:himalayastoreapp/models/products_list_model.dart';
+import 'package:himalayastoreapp/pages/product/product_more_details.dart';
 import 'package:himalayastoreapp/widgets/product_detail_column.dart';
 
 import '../../routes/route_helper.dart';
@@ -11,17 +14,19 @@ import '../../widgets/expandable_text_widget.dart';
 
 class ProductDetailScreen extends StatelessWidget {
 
-  int pageId;
-  String page;
+  int index;
+  String product_category;
 
   ProductDetailScreen({
     super.key,
-    required this.pageId,
-    required this.page
+    required this.index,
+    required this.product_category
   });
 
   @override
   Widget build(BuildContext context) {
+
+    ProductModel product = Get.find<ProductPagerViewController>().productMap[product_category]![index];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -36,7 +41,7 @@ class ProductDetailScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         image: NetworkImage(
-                            "https://firebasestorage.googleapis.com/v0/b/kapitaltaskmanager.appspot.com/o/delivery_app%2Fimagen1.jpg?alt=media&token=09662d0d-5c80-4711-96b8-6887400f3569"
+                            product.productImage2!
                         ),
                         fit: BoxFit.cover
                     )
@@ -53,11 +58,7 @@ class ProductDetailScreen extends StatelessWidget {
                   GestureDetector(
                     child: ApplIcon(icon: Icons.clear),
                     onTap: (){
-                      if(page=='cartPage'){
-                        //Get.toNamed(RouteHelper.getCartPage());
-                      }else{
-                        Get.toNamed(RouteHelper.getHome());
-                      }
+                      Navigator.pop(context);
                     },
                   ),
                   ApplIcon(icon: Icons.shopping_cart_outlined)
@@ -81,23 +82,33 @@ class ProductDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ColumnProductDetail(text: "ABCD-1234",),
+                      ColumnProductDetail(text: product.productName!,starts: product.productStars!,),
                       SizedBox(height: Dimensions.height20,),
-                      BigText(text: "Introduce"),
+                      BigText(text: "Introduce ${product.id.toString()}"),
                       SizedBox(height: Dimensions.height20,),
                       Expanded(
                         child: SingleChildScrollView(
-                            child: ExpandableText(text: "La sal del Himalaya es un tesoro natural que se forma en las profundidades de las montañas del Himalaya, una de las cadenas montañosas más majestuosas y remotas del mundo. Esta sal se ha convertido en un producto muy apreciado por su pureza y sus presuntas propiedades saludables."
-                                "Su característico color rosado se debe a la gran cantidad de minerales presentes en ella, especialmente hierro. Estos minerales no solo le otorgan su distintivo color, sino que también se cree que aportan beneficios para la salud, como la regulación del equilibrio de electrolitos en el cuerpo, la mejora de la circulación sanguínea y la promoción de la hidratación celular."
-                                "La sal del Himalaya se extrae de antiguas minas subterráneas que se formaron hace millones de años, protegidas de la contaminación moderna y preservadas en un ambiente puro y prístino. Su proceso de extracción es tradicional y manual, lo que garantiza su pureza y calidad."
-                                "Además de su uso culinario como condimento, la sal del Himalaya también se utiliza en terapias de spa y tratamientos de bienestar, como baños de sal y lámparas de sal, que se dice que ayudan a purificar el aire y a crear un ambiente más saludable en el hogar."
-                                "En resumen, la sal del Himalaya no es solo un condimento exquisito, sino también un símbolo de pureza y bienestar, que nos conecta con la majestuosidad y la antigüedad de las montañas más altas de la Tierra.")
+                            child: ExpandableText(text: product.productDescription!)
                         ),
                       )
                     ],
                   )
               )
           ),
+          Positioned(
+            right: Dimensions.width20,
+            top: Dimensions.screenHeight/3.3,
+            child: FloatingActionButton(
+              backgroundColor: AppColors.himalayaBlue,
+              onPressed: () {
+                Get.to(() => ProductMoreDetailsScreen(product: product),transition: Transition.rightToLeft,duration: Duration(milliseconds: 500));
+              },
+              child: Icon(
+                Icons.remove_red_eye,
+                color: AppColors.himalayaWhite,
+              ),
+            )
+          )
         ],
       ),
       bottomNavigationBar: Container(
@@ -128,7 +139,7 @@ class ProductDetailScreen extends StatelessWidget {
                       child: Icon(Icons.remove,color: AppColors.signColor,)
                   ),
                   SizedBox(width: Dimensions.width10/2,),
-                  BigText(text: '',
+                  BigText(text: '0',
                       //text: popularProduct.inCartItems.toString()
                   ),
                   SizedBox(width: Dimensions.width10/2,),
@@ -147,7 +158,7 @@ class ProductDetailScreen extends StatelessWidget {
               },
               child: Container(
                 padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                child: BigText(text: "\$ 39900 | Add to cart", color: Colors.white,),
+                child: BigText(text: "\$ ${product.productPrice!} | Add to cart", color: Colors.white,),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.radius20),
                     color: AppColors.himalayaBlue

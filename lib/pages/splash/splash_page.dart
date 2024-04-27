@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 
 import '../../routes/route_helper.dart';
 import '../../utils/app_colors.dart';
@@ -67,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   Future<void> _loadResources() async{
-
+    await Get.find<ProductsPageController>().getProductsCategoriesList();
   }
 
 }

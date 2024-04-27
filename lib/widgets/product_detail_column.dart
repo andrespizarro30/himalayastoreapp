@@ -13,10 +13,12 @@ import 'small_text.dart';
 class ColumnProductDetail extends StatelessWidget {
 
   final String text;
+  final int starts;
 
   const ColumnProductDetail({
     super.key,
-    required this.text
+    required this.text,
+    required this.starts
   });
 
   @override
@@ -29,12 +31,12 @@ class ColumnProductDetail extends StatelessWidget {
         Row(
           children: [
             Wrap(
-                children: List.generate(5, (index) => Icon(Icons.star,color: AppColors.himalayaBlue, size: 15,))
+                children: List.generate(starts, (index) => Icon(Icons.star,color: AppColors.himalayaBlue, size: 15,))
             ),
             SizedBox(width: 10,),
-            SmallText(text: "4.5"),
+            SmallText(text: starts.toString()),
             SizedBox(width: 10,),
-            SmallText(text: "1287"),
+            SmallText(text: "888"),
             SizedBox(width: 10),
             SmallText(text: "comments")
           ],
