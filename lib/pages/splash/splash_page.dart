@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 
+import '../../controllers/authentication_controller.dart';
+import '../../controllers/cart_controller.dart';
 import '../../routes/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
@@ -68,7 +70,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   Future<void> _loadResources() async{
-    await Get.find<ProductsPageController>().getProductsCategoriesList();
+    //await Get.find<ProductsPageController>().getProductsCategoriesList();
+    //await Get.find<CartController>().getCartData();
+    //await Get.find<AuthenticationPageController>().verifyCurrentUser();
   }
 
 }

@@ -64,6 +64,7 @@ class ProductModel {
   String? paragraph12;
   String? subTitle13;
   String? paragraph13;
+  int? product_qty_available;
 
   ProductModel(
       {this.id = 0,
@@ -101,7 +102,8 @@ class ProductModel {
         this.subTitle12 = "",
         this.paragraph12 = "",
         this.subTitle13 = "",
-        this.paragraph13 = ""
+        this.paragraph13 = "",
+        this.product_qty_available = -1
       });
 
   ProductModel.fromJson(Map<String, dynamic> json) {
@@ -141,6 +143,7 @@ class ProductModel {
     paragraph12 = json['Paragraph_12'];
     subTitle13 = json['Sub_Title_13'];
     paragraph13 = json['Paragraph_13'];
+    product_qty_available = json['product_qty_available'];
   }
 
   Map<String, dynamic> toJson() {
@@ -181,6 +184,7 @@ class ProductModel {
     data['Paragraph_12'] = this.paragraph12;
     data['Sub_Title_13'] = this.subTitle13;
     data['Paragraph_13'] = this.paragraph13;
+    data['product_qty_available'] = this.product_qty_available;
     return data;
   }
 }

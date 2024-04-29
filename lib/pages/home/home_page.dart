@@ -1,11 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/pages/authenticate/sign_up_page.dart';
 import 'package:himalayastoreapp/pages/cart/cart_history_page.dart';
 import 'package:himalayastoreapp/pages/cart/cart_page.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
+import '../../controllers/authentication_controller.dart';
+import '../../controllers/cart_controller.dart';
+import '../../controllers/products_page_controller.dart';
 import '../../utils/app_colors.dart';
+import '../authenticate/account_page.dart';
 import 'main_products_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,8 +30,8 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _pages=[
     MainProductsScreen(),
     CartHistoryScreen(),
-    CartScreen(),
-    SignUpScreen()
+    CartScreen(page: "",),
+    AccountScreen()
   ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -103,4 +109,5 @@ class _HomePageState extends State<HomePage> {
       navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
     );
   }
+
 }

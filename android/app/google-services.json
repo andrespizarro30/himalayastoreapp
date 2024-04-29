@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "582441400507",
+    "project_id": "himalayastoreapp",
+    "storage_bucket": "himalayastoreapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582441400507:android:bcdc46d91564cacb58119e",
+        "android_client_info": {
+          "package_name": "com.afsoftwaresolutions.com.himalayastoreapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbyWEjLlPpAWevQBI1LIdGKoAd-U6qFvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -64,8 +64,8 @@ class ProductsPageController extends GetxController{
   int checkQuantity(int quantity){
     if((_inCartItems+quantity)<0){
       Get.snackbar(
-          "Item Count",
-          "Item number can't be less than zero",
+          "Conteo de items",
+          "Cantidad de items debe ser mayor que cero",
           backgroundColor: AppColors.himalayaBlue,
           colorText: Colors.white,
           duration: Duration(seconds: 1)
@@ -78,8 +78,8 @@ class ProductsPageController extends GetxController{
     }else
     if((_inCartItems+quantity)>20){
       Get.snackbar(
-          "Item Count",
-          "Item number can't be greater than 20",
+          "Conteo de items",
+          "Máximo 20 por pedido",
           backgroundColor: AppColors.himalayaBlue,
           colorText: Colors.white,
           duration: Duration(seconds: 1)

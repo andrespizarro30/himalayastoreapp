@@ -68,22 +68,11 @@ class ProductPagerViewController extends GetxController{
 
   }
 
-  void clearIsLoadedMap(List<ProductsCategories> productcategoriesList){
+  Future<void> clearIsLoadedMap() async{
 
     _productMap.clear();
 
-    productcategoriesList.forEach((productCategory) {
-      if(!_isLoaded.containsKey(productCategory.productCategory)){
-        _isLoaded.putIfAbsent(productCategory.productCategory!, (){
-          return true;
-        });
-      }else{
-        _isLoaded.update(productCategory.productCategory!, (value){
-          return true;
-        });
-      }
-    });
-
+    _isLoaded = {};
 
   }
 

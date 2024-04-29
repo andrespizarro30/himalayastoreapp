@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/widgets/product_detail_column.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../controllers/products_page_controller.dart';
 import '../models/products_list_model.dart';
@@ -40,12 +42,16 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    pageController.addListener(() {
-      setState(() {
-        _currPageValue = pageController.page!;
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async{
+      pageController.addListener(() {
+        setState(() {
+          _currPageValue = pageController.page!;
+        });
       });
+      _loadResources(product_category);
     });
-    _loadResources(product_category);
+
   }
 
   @override
@@ -61,44 +67,103 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
   Widget build(BuildContext context) {
 
     return GetBuilder<ProductPagerViewController>(builder: (controller){
-      return !controller.isLoaded[product_category]! ?
-      Column(
-        children: [
-          BigText(text: product_category,size: Dimensions.font16,color: AppColors.himalayaGrey,),
-          SizedBox(
-            height: Dimensions.height10,
-          ),
-          Container(
-            color: AppColors.himalayaWhite,
-            height: Dimensions.pageView,
-            child: PageView.builder(
-                controller: pageController,
-                itemCount: controller.productMap[product_category]!.length,
-                itemBuilder: (context, index){
-                  return GestureDetector(
-                      onTap: (){
-                        Get.toNamed(RouteHelper.getProductDetails(index.toString(),product_category));
-                      },
-                      child: _buildPageItem(index,controller.productMap[product_category]![index])
-                  );
-                }
+      return controller.isLoaded.isNotEmpty ?
+          !controller.isLoaded[product_category]! ?
+          Column(
+            children: [
+              BigText(text: product_category,size: Dimensions.font16,color: AppColors.himalayaGrey,),
+              SizedBox(
+                height: Dimensions.height10,
+              ),
+              Container(
+                color: AppColors.himalayaWhite,
+                height: Dimensions.pageView * 1.1,
+                child: PageView.builder(
+                    controller: pageController,
+                    itemCount: controller.productMap[product_category]!.length,
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                          onTap: (){
+                            if(controller.productMap[product_category]![index].product_qty_available! > 0){
+                              Get.toNamed(RouteHelper.getProductDetails(index.toString(),product_category));
+                            }
+                          },
+                          child: _buildPageItem(index,controller.productMap[product_category]![index])
+                      );
+                    }
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      DotsIndicator(
+                        dotsCount: controller.productMap[product_category]!.length,
+                        position: _currPageValue.round(),
+                        mainAxisSize: MainAxisSize.min,
+                        decorator: DotsDecorator(
+                          color: Colors.grey,
+                          activeColor: AppColors.himalayaBlue,
+                          size: const Size.square(9.0),
+                          activeSize: const Size(18.0, 9.0),
+                          activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: Dimensions.height20,)
+            ],
+          ) :
+          Padding(
+            padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+            child: Column(
+              children: [
+                Container(
+                    width: Dimensions.screenWidth,
+                    height: Dimensions.pageView,
+                    child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade400,
+                        highlightColor: Colors.white,
+                        child: Container(
+                            width:Dimensions.screenWidth,
+                            height: Dimensions.pageView,
+                            decoration: BoxDecoration(
+                                color: Colors.grey.shade400
+                            )
+                        )
+                    )
+                ),
+                SizedBox(height: Dimensions.height10,)
+              ],
             ),
+          ) :
+        Padding(
+          padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+          child: Column(
+            children: [
+              Container(
+                  width: Dimensions.screenWidth,
+                  height: Dimensions.pageView,
+                  child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade400,
+                      highlightColor: Colors.white,
+                      child: Container(
+                          width:Dimensions.screenWidth,
+                          height: Dimensions.pageView,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade400
+                          )
+                      )
+                  )
+              ),
+              SizedBox(height: Dimensions.height10,)
+            ],
           ),
-          DotsIndicator(
-            dotsCount: controller.productMap[product_category]!.length,
-            position: _currPageValue.round(),
-            decorator: DotsDecorator(
-              color: Colors.grey,
-              activeColor: AppColors.himalayaBlue,
-              size: const Size.square(9.0),
-              activeSize: const Size(18.0, 9.0),
-              activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-            ),
-          ),
-          SizedBox(height: Dimensions.height20,)
-        ],
-      ) :
-      CircularProgressIndicator(color: AppColors.himalayaBlue,backgroundColor: Colors.white,);
+        );
     });
 
   }
@@ -142,35 +207,37 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
                   )
               )
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
+          Positioned(
+            bottom: 0,
+            right: Dimensions.width10 / 5,
+            left: Dimensions.width10 / 5,
             child: Container(
-              height: Dimensions.pageViewTextContainer,
-              margin: EdgeInsets.only(left: Dimensions.width30,right: Dimensions.width30,bottom: Dimensions.height30),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppColors.himalayaBlue,
-                        blurRadius: 5.0,
-                        offset: Offset(0,5)
-                    ),
-                    BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-5,0)
-                    ),
-                    BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(5,0)
-                    )
-                  ]
-              ),
-              child: Container(
-                  padding: EdgeInsets.only(top: Dimensions.height10,left: Dimensions.width15,right: Dimensions.width15),
-                  child: ColumnProductDetail(text: product.productName!,starts: product.productStars!,)
-              ),
-            ),
+                height: Dimensions.pageViewTextContainer * 1.1,
+                margin: EdgeInsets.only(left: Dimensions.width30,right: Dimensions.width30,bottom: Dimensions.height40),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                          color: AppColors.himalayaBlue,
+                          blurRadius: 5.0,
+                          offset: Offset(0,5)
+                      ),
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(-5,0)
+                      ),
+                      BoxShadow(
+                          color: Colors.white,
+                          offset: Offset(5,0)
+                      )
+                    ]
+                ),
+                child: Container(
+                    padding: EdgeInsets.only(top: Dimensions.height10,left: Dimensions.width15,right: Dimensions.width15),
+                    child: ColumnProductDetail(text: product.productName!,starts: product.productStars!,product_qty_available: product.product_qty_available!,)
+                )
+            )
           )
         ],
       ),
