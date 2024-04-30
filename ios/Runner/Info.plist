@@ -24,6 +24,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app always needs access to the device&apos;s location. - 1</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app always needs access to the device&apos;s location. - 2</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app always needs access to the device&apos;s location. - 3</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -45,5 +51,17 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>location</string>
+		<string>remote-notification</string>
+	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>La app requiere acceso a su registro fotográfico</string>
+	<key>NSCameraUsageDescription</key>
+	<string>La app requiere acceso al uso de su cámara</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>La app requiere acceder al uso de carpetas</string>
 </dict>
 </plist>

@@ -5,11 +5,14 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 import '../../base/request_camera_gallery.dart';
+import '../../base/show_custom_message.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/products_pager_view_controller.dart';
+import '../../permissions/permissions.dart';
 import '../../routes/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
@@ -64,8 +67,17 @@ class AccountScreen extends StatelessWidget {
                       right: Dimensions.width10,
                       bottom: Dimensions.height10,
                       child: GestureDetector(
-                        onTap: (){
-                          pickImageFromCamera(controller);
+                        onTap: () async{
+                          var permissionStatus = Platform.isAndroid ? await requestStoragePermissionIOS() : await requestStoragePermissionIOS();
+                          if(permissionStatus.isGranted){
+                            pickImageFromCamera(controller);
+                          }else
+                          if(Platform.isIOS){
+                            pickImageFromCamera(controller);
+                          }
+                          else{
+                            showCustomSnackBar("Acepte los permisos de cámara requeridos");
+                          }
                         },
                         child: ApplIcon(
                           icon: Icons.edit,

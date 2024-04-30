@@ -94,6 +94,7 @@ class AuthenticationPageController extends GetxController implements GetxService
     var firebaseAuth = await authRepo.getProfileData();
 
     if(firebaseAuth.currentUser != null){
+
       var dataList = firebaseAuth.currentUser!.displayName!.split(";");
 
       _signUpBody.name = dataList[0];
