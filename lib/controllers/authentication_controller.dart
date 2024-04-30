@@ -93,16 +93,18 @@ class AuthenticationPageController extends GetxController implements GetxService
 
     var firebaseAuth = await authRepo.getProfileData();
 
-    var dataList = firebaseAuth.currentUser!.displayName!.split(";");
+    if(firebaseAuth.currentUser != null){
+      var dataList = firebaseAuth.currentUser!.displayName!.split(";");
 
-    _signUpBody.name = dataList[0];
-    _signUpBody.phone = dataList[1];
-    _signUpBody.userType = dataList[2];
-    _signUpBody.email = firebaseAuth.currentUser!.email;
+      _signUpBody.name = dataList[0];
+      _signUpBody.phone = dataList[1];
+      _signUpBody.userType = dataList[2];
+      _signUpBody.email = firebaseAuth.currentUser!.email;
 
-    _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
+      _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
 
-    update();
+      update();
+    }
 
   }
 
