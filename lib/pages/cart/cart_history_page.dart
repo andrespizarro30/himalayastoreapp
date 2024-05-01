@@ -161,7 +161,7 @@ class CartHistoryScreen extends StatelessWidget {
                                                     borderRadius: BorderRadius.circular(Dimensions.radius15/3),
                                                     border: Border.all(width: 1,color: AppColors.himalayaBlue),
                                                   ),
-                                                  child: SmallText(text: "One more",color: AppColors.himalayaBlue,),
+                                                  child: SmallText(text: "Pedir +",color: AppColors.himalayaBlue,),
                                                 ),
                                               )
                                             ],
@@ -175,7 +175,7 @@ class CartHistoryScreen extends StatelessWidget {
                           }
                       ) :
                       NoDataPage(
-                        text: "Make your firts order now !!!",
+                        text: "Haz tu primera orden...",
                         imgPath: "assets/image/empty_box.png",
                       );
                     }),

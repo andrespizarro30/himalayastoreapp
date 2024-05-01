@@ -7,6 +7,7 @@ import '../data/repositories/products_repository.dart';
 import '../models/cart_model.dart';
 import '../models/products_category_list_model.dart';
 import '../models/products_list_model.dart';
+import '../models/user_model.dart';
 import '../utils/app_colors.dart';
 import 'cart_controller.dart';
 
@@ -22,6 +23,9 @@ class ProductsPageController extends GetxController{
 
   List<ProductsCategories> _productsCategoriesList=[];
   List<ProductsCategories> get productsCategoriesList => _productsCategoriesList;
+
+  List<UsersModel> _deliveriesReceiverList=[];
+  List<UsersModel> get deliveriesReceiverList => _deliveriesReceiverList;
 
   late CartController _cartController;
 
@@ -44,6 +48,16 @@ class ProductsPageController extends GetxController{
 
       _isLoaded = true;
       update();
+    }else{
+
+    }
+  }
+
+  Future<void> getDeliveryReceiverData()async{
+    Response response = await productsRepository.getDeliveryReceiverData();
+    if(response.statusCode == 200){
+      _deliveriesReceiverList=[];
+      _deliveriesReceiverList.addAll(UsersListModel.fromJson(response.body).mainUsersList);
     }else{
 
     }

@@ -19,6 +19,9 @@ class CartController extends GetxController{
 
   List<CartModel> storageItems = [];
 
+  bool _loadingNewDelivery = false;
+  bool get loadingNewDelivery => _loadingNewDelivery;
+
   void addItem(ProductModel product, int quantity){
 
     var totalQuantity = 0 ;
@@ -62,8 +65,8 @@ class CartController extends GetxController{
         });
       }else{
         Get.snackbar(
-            "Item Count",
-            "At least one item must be added",
+            "Conteo de items",
+            "Debe agregar al menos un item",
             backgroundColor: AppColors.himalayaBlue,
             colorText: Colors.white,
             duration: Duration(seconds: 2)
@@ -191,6 +194,28 @@ class CartController extends GetxController{
   void clearCartHistory(){
     cartRepo.clearCartHistory();
     update();
+  }
+
+  Future<void> registerNewDelivery()async{
+
+    _loadingNewDelivery = true;
+    update();
+
+    var time = DateTime.now();
+
+    await cartRepo.registerNewDeliveryId(time.millisecondsSinceEpoch.toString());
+
+    storageItems = _items.entries.map((e){
+      return e.value;
+    }).toList();
+
+    storageItems.forEach((cartModel) async {
+      await cartRepo.registerNewDeliveryIdDetail(time.millisecondsSinceEpoch.toString(),cartModel);
+    });
+
+    _loadingNewDelivery = false;
+    update();
+
   }
 
 }

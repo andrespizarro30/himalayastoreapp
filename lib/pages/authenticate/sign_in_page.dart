@@ -36,7 +36,7 @@ class SignInScreen extends StatelessWidget {
       }else if(pwd.isEmpty){
         showCustomSnackBar("Ingrese su password",title: "Password");
       }else if(pwd.length<6){
-        showCustomSnackBar("Passwor debe ser al menos de 6 caracteres",title: "Password");
+        showCustomSnackBar("Password debe ser al menos de 6 caracteres",title: "Password");
       }else{
 
         SignUpBody signUpBody = SignUpBody(name: "", phone: "", email: email, password: pwd);

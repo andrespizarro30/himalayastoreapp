@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/cart_controller.dart';
 import '../../controllers/products_page_controller.dart';
+import '../../push_notifications/push_notification_system.dart';
 import '../../utils/app_colors.dart';
 import '../authenticate/account_page.dart';
 import 'main_products_page.dart';
@@ -76,6 +78,8 @@ class _HomePageState extends State<HomePage> {
 
     _controller = PersistentTabController(initialIndex: 0);
 
+    initNotificationService();
+
   }
 
   @override
@@ -108,6 +112,14 @@ class _HomePageState extends State<HomePage> {
       ),
       navBarStyle: NavBarStyle.style1, // Choose the nav bar style with this property.
     );
+  }
+
+  void initNotificationService() async{
+
+    PushNotificationSystem pushNotificationSystem = PushNotificationSystem(context: context);
+    pushNotificationSystem.initializeCloudMessaging();
+    pushNotificationSystem.generateMessagingToken();
+
   }
 
 }

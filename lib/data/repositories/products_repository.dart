@@ -32,4 +32,14 @@ class ProductsRepository extends GetxService{
 
   }
 
+  Future<Response> getDeliveryReceiverData() async {
+
+    Map<String,String> data = {};
+
+    data['UserUserType'] = "Tecnico";
+
+    return await apiClient.getDataWithQuery(AppConstants.DELIVERY_RECEIVER_DATA,data);
+
+  }
+
 }

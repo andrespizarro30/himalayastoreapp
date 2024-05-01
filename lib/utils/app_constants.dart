@@ -9,8 +9,16 @@ class AppConstants{
   static const String ALL_PRODUCTS_LIST = "/api/productslist/get";
   static const String PRODUCTS_LIST_BY_CATEGORY = "/api/productslistbycategory/get";
   static const String PRODUCTS_CATEGORIES_LIST = "/api/productscategories/get";
+  static const String DELIVERY_RECEIVER_DATA = "/api/mainuser/get";
+  static const String REGISTER_NEW_USER = "/api/registerNewUser/post";
+  static const String DELIVERIES_LIST = '/api/deliveriesList/get';
+  static const String REGISTER_NEW_DELIVERY_ID = '/api/registerNewDeliveryId/post';
+  static const String DELIVERIES_DETAIL_LIST = '/api/deliveriesDetailsList/get';
+  static const String REGISTER_NEW_DELIVERY_ID_DETAIL = '/api/registerNewDeliveryDetail/post';
+
 
   static const String TOKEN = "DBToken";
+  static const String FIRESTORE_TOKENS = "token";
 
   static const String GOOGLEMAPSANDROIDKEY = "AIzaSyAkBBvSMGpO4EoLTNjkLr7V-HzvdRlTY14";
   static const String GOOGLEMAPSIOSKEY = "AIzaSyB3gCARPJjOJlVD-HWqHYxUpwC2T-ZnxYg";

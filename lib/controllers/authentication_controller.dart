@@ -9,6 +9,7 @@ import 'package:himalayastoreapp/models/response_model.dart';
 import '../base/show_custom_message.dart';
 import '../data/repositories/authentication_repository.dart';
 import '../models/sign_up_model.dart';
+import '../utils/dimensions.dart';
 
 
 class AuthenticationPageController extends GetxController implements GetxService{
@@ -43,6 +44,12 @@ class AuthenticationPageController extends GetxController implements GetxService
 
   bool _isTechnician = false;
   bool get isTechnician => _isTechnician;
+
+  double _imageRequestContainerHeight = 0;
+  double get imageRequestContainerHeight => _imageRequestContainerHeight;
+
+  bool _isOpenImageRequestContainer = false;
+  bool get isOpenImageRequestContainer => _isOpenImageRequestContainer;
 
   Future<void> registration(SignUpBody signUpBody) async{
     _isLoading = true;
@@ -150,6 +157,42 @@ class AuthenticationPageController extends GetxController implements GetxService
   void setIfTechnician(){
     _isTechnician = !_isTechnician;
     update();
+  }
+
+  void openImageRequestContainer(){
+
+    _isOpenImageRequestContainer = !isOpenImageRequestContainer;
+
+    _imageRequestContainerHeight = isOpenImageRequestContainer ? Dimensions.screenHeight * 0.38 : 0;
+
+    update();
+
+  }
+
+  void closeDraggingUpdateImageRequestContainer(double dy){
+
+    _imageRequestContainerHeight = _imageRequestContainerHeight - dy;
+    if(_imageRequestContainerHeight<Dimensions.screenHeight * 0.2){
+      _isOpenImageRequestContainer = false;
+    }else{
+      _isOpenImageRequestContainer = true;
+    }
+
+    update();
+
+  }
+
+  void closeDraggingEndImageRequestContainer(){
+
+    if(_imageRequestContainerHeight<Dimensions.screenHeight * 0.2){
+      _isOpenImageRequestContainer = false;
+      _imageRequestContainerHeight=0;
+    }else{
+      _imageRequestContainerHeight = Dimensions.screenHeight * 0.38;
+    }
+
+    update();
+
   }
 
 }

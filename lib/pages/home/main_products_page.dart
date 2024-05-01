@@ -320,6 +320,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
 
   Future<void> _loadResources() async{
     await Get.find<ProductsPageController>().getProductsCategoriesList();
+    await Get.find<ProductsPageController>().getDeliveryReceiverData();
     await Get.find<CartController>().getCartData();
     await Get.find<AuthenticationPageController>().verifyCurrentUser();
     await Get.find<AuthenticationPageController>().getProfileData();

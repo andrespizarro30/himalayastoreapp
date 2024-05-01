@@ -25,7 +25,6 @@ class SignUpScreen extends StatelessWidget {
     bool isTechnician = false;
 
     var signUpImages = [
-      "x.png",
       "f.png",
       "g.png"
     ];
@@ -69,12 +68,17 @@ class SignUpScreen extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: Dimensions.screenHeight * 0.05,),
-              Container(
-                child: Center(
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: Dimensions.radius20 * 4,
-                    backgroundImage: AssetImage("assets/image/himalaya_logo.png"),
+              GestureDetector(
+                onTap: (){
+                  controller.addTapCount();
+                },
+                child: Container(
+                  child: Center(
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: Dimensions.radius20 * 4,
+                      backgroundImage: AssetImage("assets/image/himalaya_logo.png"),
+                    ),
                   ),
                 ),
               ),
@@ -108,6 +112,25 @@ class SignUpScreen extends StatelessWidget {
                 textInputType: TextInputType.name,
               ),
               SizedBox(height: Dimensions.height20 * 2,),
+              Center(
+                child: Visibility(
+                    visible: controller.tapsCount>20 ? true : false,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                            value: controller.isTechnician,
+                            onChanged: (bool? select){
+                              isTechnician = select!;
+                              controller.setIfTechnician();
+                            },
+                          checkColor: AppColors.himalayaWhite,
+                          activeColor: AppColors.himalayaBlue,
+                        ),
+                        BigText(text: "Soy Himalaya?")
+                      ],
+                    )
+                ),
+              ),
               GestureDetector(
                 onTap: (){
                   _registration(controller);
