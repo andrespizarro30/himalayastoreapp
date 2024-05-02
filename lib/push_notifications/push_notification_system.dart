@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:himalayastoreapp/models/instant_messages_model.dart';
 import 'package:himalayastoreapp/push_notifications/local_notification_service.dart';
+import 'package:himalayastoreapp/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../base/show_custom_message.dart';
+import '../models/deliveries_id_model.dart';
 import '../utils/app_constants.dart';
 
 
@@ -28,7 +31,7 @@ class PushNotificationSystem{
     {
       if(remoteMessage != null){
 
-        final instantMessageModel = InstantMessageModel.fromJson(remoteMessage.data);
+        final delivery = Deliveries.fromJson(remoteMessage.data);
 
 
       }
@@ -39,14 +42,18 @@ class PushNotificationSystem{
     FirebaseMessaging.onMessage.listen((RemoteMessage? remoteMessage) {
       if(remoteMessage != null){
 
-        final instantMessageModel = InstantMessageModel.fromJson(remoteMessage.data);
+        final delivery = Deliveries.fromJson(remoteMessage.data);
 
+        showCustomSnackBar("Nuevo pedido recibido desde ${delivery.deliveryCity}",title: "Tienda Himalaya",backgroundColor: AppColors.himalayaBlue);
+
+        /*
         if(Platform.isAndroid){
-          LocalNotificationService().showNotificationAndroid(instantMessageModel);
+          LocalNotificationService().showNotificationAndroid(delivery);
         }else
         if(Platform.isIOS){
-          LocalNotificationService().showNotificationIos(instantMessageModel);
+          LocalNotificationService().showNotificationIos(delivery);
         }
+        */
 
       }
     });
@@ -56,7 +63,7 @@ class PushNotificationSystem{
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? remoteMessage) {
       if(remoteMessage != null){
 
-        final instantMessageModel = InstantMessageModel.fromJson(remoteMessage.data);
+        final delivery = Deliveries.fromJson(remoteMessage.data);
 
       }
     });

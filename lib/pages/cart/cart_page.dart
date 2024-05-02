@@ -29,33 +29,8 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<CartController>(builder: (controller){
-        return Stack(
+        return !controller.loadingNewDelivery && !controller.isMessageSent ? Stack(
           children: [
-            controller.loadingNewDelivery ?
-            Container(
-              height: Dimensions.screenHeight,
-              width: double.infinity,
-              color: Colors.white,
-              child: Center(
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(
-                        color: AppColors.himalayaBlue,
-                      ),
-                      SizedBox(
-                        height: Dimensions.height20,
-                      ),
-                      Text("Enviando pedido... por favor espere...")
-                    ],
-                  ),
-                ),
-              )
-            ):
-            Container(
-
-            ),
             Positioned(
                 top: Dimensions.height20*3,
                 left: Dimensions.width20,
@@ -226,6 +201,59 @@ class CartScreen extends StatelessWidget {
                 )
             )
           ],
+        ):
+        controller.loadingNewDelivery && !controller.isMessageSent ?
+        Container(
+            height: Dimensions.screenHeight,
+            width: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: AppColors.himalayaBlue,
+                    ),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
+                    Text("Enviando pedido... por favor espere...")
+                  ],
+                ),
+              ),
+            )
+        ):
+        Container(
+          color: Colors.white,
+          child: Center(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/image/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Pedido enviado correctamente, espere la confirmación de la tienda"),
+                  SizedBox(height: Dimensions.height20,),
+                  RawMaterialButton(
+                    onPressed: () {
+                      controller.cleanAfterSent();
+                      Navigator.pop(context);
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.close,
+                      size: 35.0,
+                    ),
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  )
+                ],
+              ),
+            ),
+          ),
         );
       }),
       bottomNavigationBar: GetBuilder<CartController>(builder: (controller){

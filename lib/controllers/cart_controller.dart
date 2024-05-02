@@ -1,11 +1,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/main_page_controller.dart';
+import 'package:himalayastoreapp/models/user_model.dart';
 
 import '../data/repositories/cart_repo.dart';
 import '../models/cart_model.dart';
 import '../models/products_list_model.dart';
 import '../utils/app_colors.dart';
+import 'products_page_controller.dart';
 
 class CartController extends GetxController{
 
@@ -21,6 +24,9 @@ class CartController extends GetxController{
 
   bool _loadingNewDelivery = false;
   bool get loadingNewDelivery => _loadingNewDelivery;
+
+  bool _isMessageSent = false;
+  bool get isMessageSent => _isMessageSent;
 
   void addItem(ProductModel product, int quantity){
 
@@ -213,9 +219,18 @@ class CartController extends GetxController{
       await cartRepo.registerNewDeliveryIdDetail(time.millisecondsSinceEpoch.toString(),cartModel);
     });
 
-    _loadingNewDelivery = false;
+    List<UsersModel> deliveiresReceivers = Get.find<ProductsPageController>().deliveriesReceiverList;
+
+    _isMessageSent = await cartRepo.sendNotificationToDeliveryReceiver(time.millisecondsSinceEpoch.toString(),deliveiresReceivers);
+
     update();
 
+  }
+
+  void cleanAfterSent(){
+    _isMessageSent=false;
+    _loadingNewDelivery = false;
+    update();
   }
 
 }

@@ -193,19 +193,22 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
       transform: matrix,
       child: Stack(
         children: [
-          Container(
-              height: Dimensions.pageViewContainer,
-              margin: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Dimensions.radius30),
-                  //color: index.isEven?Color(0xFF69c5df):Color(0xFF9294cc),
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          product.productImage!
-                      ),
-                      fit: BoxFit.cover
-                  )
-              )
+          Hero(
+            tag: product.id.toString(),
+            child: Container(
+                height: Dimensions.pageViewContainer,
+                margin: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    //color: index.isEven?Color(0xFF69c5df):Color(0xFF9294cc),
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            product.productImage!
+                        ),
+                        fit: BoxFit.cover
+                    )
+                )
+            ),
           ),
           Positioned(
             bottom: 0,

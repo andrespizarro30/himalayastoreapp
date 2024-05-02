@@ -187,7 +187,7 @@ class SignUpScreen extends StatelessWidget {
               Wrap(
                   spacing: Dimensions.width20*2,
                   alignment: WrapAlignment.spaceBetween,
-                  children: List.generate(3, (index) => Padding(
+                  children: List.generate(signUpImages.length, (index) => Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
                       radius: Dimensions.radius20,

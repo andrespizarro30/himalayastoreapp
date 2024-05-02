@@ -39,16 +39,19 @@ class ProductDetailScreen extends StatelessWidget {
           Positioned(
               left: 0,
               right: 0,
-              child: Container(
-                width: double.maxFinite,
-                height: Dimensions.productDetailImgSize,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            product.productImage2!
-                        ),
-                        fit: BoxFit.cover
-                    )
+              child: Hero(
+                tag: product.id.toString(),
+                child: Container(
+                  width: double.maxFinite,
+                  height: Dimensions.productDetailImgSize,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(
+                              product.productImage2!
+                          ),
+                          fit: BoxFit.cover
+                      )
+                  ),
                 ),
               )
           ),

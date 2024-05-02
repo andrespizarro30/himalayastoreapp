@@ -11,8 +11,11 @@ import '../../models/cart_model.dart';
 import 'package:collection/collection.dart';
 
 import '../../models/deliveries_id_details_model.dart';
+import '../../models/user_model.dart';
 import '../../utils/app_constants.dart';
 import '../apis/api_client.dart';
+
+import 'package:http/http.dart' as http;
 
 class CartRepo extends GetxService{
 
@@ -222,6 +225,42 @@ class CartRepo extends GetxService{
     deliveriesDetail.productSent = "NO";
 
     return await apiClient.postData(AppConstants.REGISTER_NEW_DELIVERY_ID_DETAIL, deliveriesDetail.toJson());
+
+  }
+
+  Future<bool> sendNotificationToDeliveryReceiver(String deliveryId,List<UsersModel> deliveiresReceivers) async{
+
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization': 'key=${AppConstants.FIREBASE_MESSAGING_AUTH_TOKEN}'
+    };
+
+    Map<String,dynamic> body = {
+      "notification":{
+        "body": "Nuevo pedido recibido",
+        "title": "Tienda Himalaya"
+      },
+      "priority": "high",
+      "data": {
+        "DeliveryUID": deliveryId,
+        "DeliveryId": firebaseAuth.currentUser!.uid!,
+        "DeliveryUserName": firebaseAuth.currentUser!.displayName!.split(";")[0],
+        "DeliveryCity": Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress
+      },
+      "to": deliveiresReceivers[0].userToken
+    };
+
+    var bodyEncoded = json.encode(body);
+
+    String url="https://fcm.googleapis.com/fcm/send";
+
+    final response = await http.post(Uri.parse(url),headers: headers,body: bodyEncoded,encoding: Encoding.getByName('utf-8'));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
 
   }
 

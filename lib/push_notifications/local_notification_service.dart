@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/models/deliveries_id_model.dart';
 import 'package:himalayastoreapp/models/instant_messages_model.dart';
 
 class LocalNotificationService {
@@ -7,11 +8,10 @@ class LocalNotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  static late InstantMessageModel instantMessageModel;
+  static late Deliveries deliveryNotification;
 
 
   static void notificationTapBackground(NotificationResponse notificationResponse) {
-
 
 
   }
@@ -37,9 +37,9 @@ class LocalNotificationService {
     );
   }
 
-  void showNotificationAndroid(InstantMessageModel instantMessageModel) async {
+  void showNotificationAndroid(Deliveries instantMessageModel) async {
 
-    LocalNotificationService.instantMessageModel = instantMessageModel;
+    LocalNotificationService.deliveryNotification = instantMessageModel;
 
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails('channel_id', 'Channel Name',
@@ -53,13 +53,13 @@ class LocalNotificationService {
     NotificationDetails(android: androidNotificationDetails);
 
     await flutterLocalNotificationsPlugin
-        .show(notification_id, instantMessageModel.senderEmail, instantMessageModel.message, notificationDetails, payload: 'Not present');
+        .show(notification_id, "Nuevo pedido recibido", "${deliveryNotification.deliveryUserName}-${deliveryNotification.deliveryCity}", notificationDetails, payload: 'Not present');
   }
 
 
-  void showNotificationIos(InstantMessageModel chatMessageModel) async {
+  void showNotificationIos(Deliveries chatMessageModel) async {
 
-    LocalNotificationService.instantMessageModel = chatMessageModel;
+    LocalNotificationService.deliveryNotification = chatMessageModel;
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
     DarwinNotificationDetails(
@@ -75,7 +75,7 @@ class LocalNotificationService {
     NotificationDetails(iOS: iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin
-        .show(notification_id, chatMessageModel.senderEmail, chatMessageModel.message, platformChannelSpecifics, payload: 'Not present');
+        .show(notification_id, "Nuevo pedido recibido", "${deliveryNotification.deliveryUserName}-${deliveryNotification.deliveryCity}", platformChannelSpecifics, payload: 'Not present');
   }
 
 }

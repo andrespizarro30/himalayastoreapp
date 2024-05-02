@@ -16,6 +16,8 @@ class AppConstants{
   static const String DELIVERIES_DETAIL_LIST = '/api/deliveriesDetailsList/get';
   static const String REGISTER_NEW_DELIVERY_ID_DETAIL = '/api/registerNewDeliveryDetail/post';
 
+  static const String FIREBASE_MESSAGING_AUTH_TOKEN = "AAAAh5w2eLs:APA91bGm5wCm_hD9DyRiy-1D-OAn5pThJzDGEuN7VxNAHO74QBCEoWgvxJJfAaIcRhECKZkqMKfrbqw0hK-lOHqSw3_WWtnL98mHTmc13g0-tdqXhZ0Wk1HqEDvQLRJOO67Zv6Sk8czO";
+
 
   static const String TOKEN = "DBToken";
   static const String FIRESTORE_TOKENS = "token";
