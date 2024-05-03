@@ -13,6 +13,8 @@ class CartModel {
   bool? isExist;
   String? time;
 
+  String? status;
+
   ProductModel? productModel;
 
   CartModel(
@@ -24,6 +26,7 @@ class CartModel {
         this.quantity,
         this.isExist,
         this.time,
+        this.status = "",
         this.productModel
       });
 
@@ -36,6 +39,7 @@ class CartModel {
     quantity = json['quantity'];
     isExist = json['isExist'];
     time = json['time'];
+    status = json['status'];
     productModel = ProductModel.fromJson(json['product']);
   }
 
@@ -49,6 +53,7 @@ class CartModel {
     data['quantity'] = this.quantity;
     data['isExist'] = this.isExist;
     data['time'] = this.time;
+    data['status'] = this.status;
     data['product'] = this.productModel!.toJson();
     return data;
   }

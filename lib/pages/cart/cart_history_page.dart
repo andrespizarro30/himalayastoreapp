@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -22,7 +23,9 @@ class CartHistoryScreen extends StatelessWidget {
 
     //List<Map<String,List<CartModel>>> groupHistoryDataList = Get.find<CartController>().groupHistoryDataList();
 
-    Map<String,List<CartModel>> groupHistoryDataMap = Get.find<CartController>().groupHistoryDataMap();
+    SchedulerBinding.instance.addPostFrameCallback((_) async{
+      await Get.find<CartController>().getDeliveryByUIDandID();
+    });
 
     return Scaffold(
       body: Column(
@@ -36,7 +39,13 @@ class CartHistoryScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                BigText(text: "Cart History", color: Colors.white,),
+                BigText(text: "Historial de pedidos", color: Colors.white,),
+                GestureDetector(
+                  onTap: () async{
+                    await Get.find<CartController>().getDeliveryByUIDandID();
+                  },
+                  child: Icon(Icons.refresh),
+                ),
                 GetBuilder<CartController>(builder: (controller){
                   return GestureDetector(
                     onTap: (){
@@ -83,6 +92,9 @@ class CartHistoryScreen extends StatelessWidget {
                     removeTop: true,
                     context: context,
                     child: GetBuilder<CartController>(builder: (controller){
+
+                      Map<String,List<CartModel>> groupHistoryDataMap = Get.find<CartController>().groupHistoryDataMap();
+
                       return controller.getCartHistoryList().length>0 ?
                       ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
@@ -98,11 +110,11 @@ class CartHistoryScreen extends StatelessWidget {
                             cartModelList = cartModelList.reversed.map((e) => e).toList();
 
                             return Container(
-                              height: Dimensions.height30*4.5,
+                              height: Dimensions.height30*6,
                               margin: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ((){
                                     var outputFormat = DateFormat("dd/MM/yyyy hh:mm a");
@@ -119,7 +131,7 @@ class CartHistoryScreen extends StatelessWidget {
                                               return Row(
                                                 children: [
                                                   Container(
-                                                    margin: EdgeInsets.only(bottom: Dimensions.height20),
+                                                    margin: EdgeInsets.only(bottom: Dimensions.height10/2),
                                                     width:80,
                                                     height: 80,
                                                     decoration: BoxDecoration(
@@ -168,7 +180,14 @@ class CartHistoryScreen extends StatelessWidget {
                                           ),
                                         )
                                       ]
-                                  )
+                                  ),
+                                  cartModelList[0].status == "EN" || cartModelList[0].status == "NO" || cartModelList[0].status == null || cartModelList[0].status!.isEmpty ?
+                                  BigText(text: "Status: Enviado",color: Colors.blueGrey,size: Dimensions.font16,) :
+                                  cartModelList[0].status == "PR" ?
+                                  BigText(text: "Status: En proceso",color: AppColors.himalayaBlue,size: Dimensions.font16) :
+                                  cartModelList[0].status == "CA" ?
+                                  BigText(text: "Status: En camino",color: Colors.green,size: Dimensions.font16) :
+                                  BigText(text: "Status: Recibido",color: Colors.orange,size: Dimensions.font16)
                                 ],
                               ),
                             );

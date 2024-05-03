@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/pages/authenticate/sign_in_page.dart';
 import 'package:himalayastoreapp/pages/cart/cart_page.dart';
+import 'package:himalayastoreapp/pages/deliveries/pending_deliveries.dart';
 import 'package:himalayastoreapp/pages/home/home_page.dart';
 import 'package:himalayastoreapp/pages/product/product_detail.dart';
 
@@ -21,6 +22,7 @@ class RouteHelper{
   static const String searchAddressPage = "/searchSelectConfirm";
   static const String confirmAddressPage = "/addressSelectConfirm";
   static const String selectAddressPage = "/addressSelect";
+  static const String pendingDeliveries = "/pendingDeliveries";
 
   static String getSplash()=>'$splash';
   static String getHome()=>'$home';
@@ -30,6 +32,7 @@ class RouteHelper{
   static String getSearchAddress()=>'$searchAddressPage';
   static String getConfirmAddress()=>'$confirmAddressPage';
   static String getSelectAddress()=>'$selectAddressPage';
+  static String getPendingDeliveries()=>'$pendingDeliveries';
 
 
   static List<GetPage> routes =[
@@ -55,6 +58,7 @@ class RouteHelper{
           return CartScreen(page: page!,);
         },
         transition: Transition.cupertino
-    )
+    ),
+    GetPage(name: pendingDeliveries, page: ()=>PendingDeliveriesScreen()),
   ];
 }

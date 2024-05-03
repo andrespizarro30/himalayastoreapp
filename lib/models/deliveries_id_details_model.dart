@@ -34,7 +34,7 @@ class DeliveriesDetail {
   String? productName;
   int? productPrice;
   int? productQty;
-  String? productSent;
+  String? status;
 
   DeliveriesDetail(
       {this.id,
@@ -44,7 +44,7 @@ class DeliveriesDetail {
         this.productName,
         this.productPrice,
         this.productQty,
-        this.productSent});
+        this.status});
 
   DeliveriesDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -54,7 +54,7 @@ class DeliveriesDetail {
     productName = json['ProductName'];
     productPrice = json['ProductPrice'];
     productQty = json['ProductQty'];
-    productSent = json['ProductSent'];
+    status = json['Status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -66,7 +66,7 @@ class DeliveriesDetail {
     data['ProductName'] = this.productName;
     data['ProductPrice'] = this.productPrice;
     data['ProductQty'] = this.productQty;
-    data['ProductSent'] = this.productSent;
+    data['Status'] = this.status;
     return data;
   }
 }

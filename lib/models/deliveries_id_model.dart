@@ -1,7 +1,7 @@
 class DeliveriesList {
 
-  List<Deliveries>? _deliveriesList;
-  List<Deliveries>? get deliveriesList => _deliveriesList;
+  List<Deliveries> _deliveriesList = [];
+  List<Deliveries> get deliveriesList => _deliveriesList;
 
 
   DeliveriesList({required deliveriesList}){
@@ -35,11 +35,13 @@ class Deliveries {
   String? deliveryDetailAddress;
   String? deliveryReferenceAddress;
   String? deliveryCity;
+  String? deliveryPhone;
+  String? deliveryEmail;
   String? deliveryPosition;
   String? deliveryDate;
   String? deliveryToken;
   String? deliveryId;
-  String? deliverySent;
+  String? deliveryStatus;
 
   Deliveries(
       {this.id,
@@ -49,11 +51,13 @@ class Deliveries {
         this.deliveryDetailAddress,
         this.deliveryReferenceAddress,
         this.deliveryCity,
+        this.deliveryPhone,
+        this.deliveryEmail,
         this.deliveryPosition,
         this.deliveryDate,
         this.deliveryToken,
         this.deliveryId,
-        this.deliverySent});
+        this.deliveryStatus});
 
   Deliveries.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -63,11 +67,13 @@ class Deliveries {
     deliveryDetailAddress = json['DeliveryDetailAddress'];
     deliveryReferenceAddress = json['DeliveryReferenceAddress'];
     deliveryCity = json['DeliveryCity'];
+    deliveryPhone = json['DeliveryPhone'];
+    deliveryEmail = json['DeliveryEmail'];
     deliveryPosition = json['DeliveryPosition'];
     deliveryDate = json['DeliveryDate'];
     deliveryToken = json['DeliveryToken'];
     deliveryId = json['DeliveryId'];
-    deliverySent = json['DeliverySent'];
+    deliveryStatus = json['DeliveryStatus'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,11 +85,13 @@ class Deliveries {
     data['DeliveryDetailAddress'] = this.deliveryDetailAddress;
     data['DeliveryReferenceAddress'] = this.deliveryReferenceAddress;
     data['DeliveryCity'] = this.deliveryCity;
+    data['DeliveryPhone'] = this.deliveryPhone;
+    data['DeliveryEmail'] = this.deliveryEmail;
     data['DeliveryPosition'] = this.deliveryPosition;
     data['DeliveryDate'] = this.deliveryDate;
     data['DeliveryToken'] = this.deliveryToken;
     data['DeliveryId'] = this.deliveryId;
-    data['DeliverySent'] = this.deliverySent;
+    data['DeliveryStatus'] = this.deliveryStatus;
     return data;
   }
 }

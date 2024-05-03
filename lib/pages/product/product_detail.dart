@@ -86,7 +86,7 @@ class ProductDetailScreen extends StatelessWidget {
                                 icon: Icons.circle,
                                 size: 20,
                                 iconColor: Colors.transparent,
-                                backgroundColor: AppColors.himalayaBlue,
+                                backgroundColor: Colors.redAccent,
                               )
                           ) :
                           Container(),
@@ -199,6 +199,7 @@ class ProductDetailScreen extends StatelessWidget {
               GestureDetector(
                 onTap: (){
                   productContoller.addItem(product);
+                  Get.find<CartController>().refreshOne();
                 },
                 child: Container(
                   padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),

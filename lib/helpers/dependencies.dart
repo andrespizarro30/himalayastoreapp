@@ -6,12 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/cart_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
+import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/controllers/select_address_page_controller.dart';
 import 'package:himalayastoreapp/data/repositories/cart_repo.dart';
 import 'package:himalayastoreapp/data/repositories/google_map_repository.dart';
 import 'package:himalayastoreapp/data/repositories/main_page_repository.dart';
+import 'package:himalayastoreapp/data/repositories/pending_deliveries_repo.dart';
 import 'package:himalayastoreapp/data/repositories/products_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,6 +52,7 @@ Future<void> init() async{
   Get.lazyPut(() => AuthenticationRepo(firebaseAuth: Get.find(),apiClient: Get.find(),sharedPreferences: Get.find()));
   Get.lazyPut(() => MainPageRepo(sharedPreferences: Get.find()));
   Get.lazyPut(() => GoogleMapRepo(googleMapsApiClient: Get.find(), sharedPreferences: Get.find()));
+  Get.lazyPut(() => PendingDeliveriesRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
 
 
   //controllers
@@ -59,7 +62,7 @@ Future<void> init() async{
   Get.lazyPut(() => AuthenticationPageController(authRepo: Get.find(),firebaseAuth: Get.find(),firebaseStorage: Get.find()));
   Get.lazyPut(() => MainPageController(mainPageRepo: Get.find()));
   Get.lazyPut(() => SelectAddressPageController(googleMapRepo: Get.find()));
-
+  Get.lazyPut(() => PendingDeliviresController(pendingDeliveriesRepo: Get.find()));
 
 
 }

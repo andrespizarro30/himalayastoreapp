@@ -132,13 +132,33 @@ class AccountScreen extends StatelessWidget {
                                 ),
                                 bigText: BigText(text: controller.signUpBody.email!,)
                             ),
-                            SizedBox(height: Dimensions.height40 * 3,),
+                            controller.signUpBody.userType == "Tecnico" ?
+                            SizedBox(height: Dimensions.height20,):
+                            SizedBox(height: Dimensions.height40,),
+                            controller.signUpBody.userType == "Tecnico" ?
+                            GestureDetector(
+                              onTap: (){
+                                Get.toNamed(RouteHelper.getPendingDeliveries());
+                              },
+                              child: AccountWidget(
+                                  applIcon: ApplIcon(
+                                    icon: Icons.list_alt_sharp,
+                                    backgroundColor: AppColors.himalayaBlue,
+                                    iconColor: Colors.white,
+                                    iconSize: Dimensions.iconSize24,
+                                    size: Dimensions.height10 * 5,
+                                  ),
+                                  bigText: BigText(text: "Ver pedidos recibidos",)
+                              ),
+                            ):
+                            SizedBox(height: Dimensions.height40,),
+                            SizedBox(height: Dimensions.height40,),
                             GestureDetector(
                               onTap: (){
                                 controller.signOut();
                                 controller.verifyCurrentUser();
                                 Get.find<ProductPagerViewController>().clearIsLoadedMap();
-                                Get.toNamed(RouteHelper.signIn);
+                                Get.offNamed(RouteHelper.signIn);
                               },
                               child: AccountWidget(
                                   applIcon: ApplIcon(
@@ -271,7 +291,7 @@ class AccountScreen extends StatelessWidget {
         child: Center(
             child: GestureDetector(
               onTap: (){
-                Get.toNamed(RouteHelper.signIn);
+                Get.offNamed(RouteHelper.signIn);
               },
               child: Container(
                 height: Dimensions.screenHeight * 0.05,

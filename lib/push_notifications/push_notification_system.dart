@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
 import 'package:himalayastoreapp/models/instant_messages_model.dart';
 import 'package:himalayastoreapp/push_notifications/local_notification_service.dart';
 import 'package:himalayastoreapp/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../base/show_custom_message.dart';
+import '../controllers/cart_controller.dart';
 import '../models/deliveries_id_model.dart';
 import '../utils/app_constants.dart';
 
@@ -42,9 +44,30 @@ class PushNotificationSystem{
     FirebaseMessaging.onMessage.listen((RemoteMessage? remoteMessage) {
       if(remoteMessage != null){
 
-        final delivery = Deliveries.fromJson(remoteMessage.data);
+        if(remoteMessage.notification!.body! == "Nuevo pedido recibido"){
+          final delivery = Deliveries.fromJson(remoteMessage.data);
+          showCustomSnackBar("Nuevo pedido recibido desde ${delivery.deliveryCity}",title: "Tienda Himalaya",backgroundColor: AppColors.himalayaBlue);
+        }else{
+          final deliveryStatus = remoteMessage.data["DeliveryStatus"];
+          String messageStatus = "";
 
-        showCustomSnackBar("Nuevo pedido recibido desde ${delivery.deliveryCity}",title: "Tienda Himalaya",backgroundColor: AppColors.himalayaBlue);
+          if(deliveryStatus == "EN"){
+            messageStatus = "Pedido ha sido recibido";
+          }else
+          if(deliveryStatus == "PR"){
+            messageStatus = "Pedido en proceso";
+          }else
+          if(deliveryStatus == "CA"){
+            messageStatus = "Pedido en camino";
+          }else
+          if(deliveryStatus == "RE"){
+            messageStatus = "Pedido entregado";
+          }
+          showCustomSnackBar(messageStatus,title: "Tienda Himalaya",backgroundColor: AppColors.himalayaBlue);
+
+          Get.find<CartController>().getDeliveryByUIDandID();
+
+        }
 
         /*
         if(Platform.isAndroid){

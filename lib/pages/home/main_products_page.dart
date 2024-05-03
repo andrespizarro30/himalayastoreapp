@@ -322,6 +322,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
     await Get.find<ProductsPageController>().getProductsCategoriesList();
     await Get.find<ProductsPageController>().getDeliveryReceiverData();
     await Get.find<CartController>().getCartData();
+    Get.find<CartController>().refreshOne();
     await Get.find<AuthenticationPageController>().verifyCurrentUser();
     await Get.find<AuthenticationPageController>().getProfileData();
     Get.find<MainPageController>().getCurrentAddress();

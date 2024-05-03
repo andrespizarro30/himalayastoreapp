@@ -6,6 +6,7 @@ import 'package:himalayastoreapp/models/user_model.dart';
 
 import '../data/repositories/cart_repo.dart';
 import '../models/cart_model.dart';
+import '../models/deliveries_id_model.dart';
 import '../models/products_list_model.dart';
 import '../utils/app_colors.dart';
 import 'products_page_controller.dart';
@@ -28,6 +29,9 @@ class CartController extends GetxController{
   bool _isMessageSent = false;
   bool get isMessageSent => _isMessageSent;
 
+  Map<String,List<CartModel>> _cartItemsPerOrder = Map();
+  Map<String,List<CartModel>> get cartItemsPerOrder => _cartItemsPerOrder;
+
   void addItem(ProductModel product, int quantity){
 
     var totalQuantity = 0 ;
@@ -46,6 +50,7 @@ class CartController extends GetxController{
             quantity : value.quantity!+quantity,
             isExist : true,
             time : DateTime.now().toString(),
+            status: "EN",
             productModel: product
         );
       });
@@ -66,6 +71,7 @@ class CartController extends GetxController{
               quantity : quantity,
               isExist : true,
               time : DateTime.now().toString(),
+              status: "EN",
               productModel: product
           );
         });
@@ -190,7 +196,10 @@ class CartController extends GetxController{
   }
 
   Map<String,List<CartModel>> groupHistoryDataMap(){
-    return cartRepo.groupHistoryDataMap();
+
+    _cartItemsPerOrder = cartRepo.groupHistoryDataMap();
+
+    return _cartItemsPerOrder;
   }
 
   List<Map<String,List<CartModel>>> groupHistoryDataList(){
@@ -202,18 +211,40 @@ class CartController extends GetxController{
     update();
   }
 
+  Future<void> getDeliveryByUIDandID() async {
+
+    _cartItemsPerOrder.keys.forEach((deliveryId) async{
+
+      Response response = await cartRepo.getDeliveryByUIDandID(deliveryId);
+
+      if(response.statusCode == 200){
+
+        var delivery = Deliveries.fromJson(response.body[0]);
+
+        cartRepo.modifyCartHistoryListStatus(delivery);
+
+        update();
+
+      }else{
+
+      }
+
+    });
+
+  }
+
   Future<void> registerNewDelivery()async{
 
     _loadingNewDelivery = true;
     update();
 
-    var time = DateTime.now();
-
-    await cartRepo.registerNewDeliveryId(time.millisecondsSinceEpoch.toString());
-
     storageItems = _items.entries.map((e){
       return e.value;
     }).toList();
+
+    var time = DateTime.parse(storageItems[0].time!);
+
+    await cartRepo.registerNewDeliveryId(time.millisecondsSinceEpoch.toString());
 
     storageItems.forEach((cartModel) async {
       await cartRepo.registerNewDeliveryIdDetail(time.millisecondsSinceEpoch.toString(),cartModel);
@@ -230,6 +261,10 @@ class CartController extends GetxController{
   void cleanAfterSent(){
     _isMessageSent=false;
     _loadingNewDelivery = false;
+    update();
+  }
+
+  void refreshOne(){
     update();
   }
 

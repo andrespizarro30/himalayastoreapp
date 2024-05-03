@@ -61,4 +61,14 @@ class ApiClient extends GetConnect implements GetxService{
     }
   }
 
+  Future<Response> putData(String uri, dynamic body) async{
+    try{
+      Response response = await put(uri, body, headers: mainHeaders);
+      return response;
+    }catch(e){
+      print(e.toString());
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
 }

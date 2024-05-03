@@ -70,7 +70,7 @@ class CartScreen extends StatelessWidget {
                                 icon: Icons.circle,
                                 size: 20,
                                 iconColor: Colors.transparent,
-                                backgroundColor: AppColors.iconColor2,
+                                backgroundColor: Colors.redAccent,
                               )
                           ) :
                           Container(),
@@ -239,7 +239,9 @@ class CartScreen extends StatelessWidget {
                   RawMaterialButton(
                     onPressed: () {
                       controller.cleanAfterSent();
-                      Navigator.pop(context);
+                      if(page.isNotEmpty){
+                        Navigator.pop(context);
+                      }
                     },
                     elevation: 2.0,
                     fillColor: Colors.white,
@@ -260,62 +262,65 @@ class CartScreen extends StatelessWidget {
 
         var _cartList = controller.getItems;
 
-        return Container(
-          height: Dimensions.bottomHeightBar,
-          padding: EdgeInsets.only(top: Dimensions.height30,bottom: Dimensions.height30,left: Dimensions.width20,right: Dimensions.width20),
-          decoration: BoxDecoration(
-              color: AppColors.buttonBackGroundColor,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(Dimensions.radius20*2),
-                topLeft: Radius.circular(Dimensions.radius20*2),
-              )
-          ),
-          child: _cartList.length>0 ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    color: Colors.white
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(width: Dimensions.width10/2,),
-                    BigText(
-                        text: "\$ ${controller.totalAmount.toString()}"
-                    ),
-                    SizedBox(width: Dimensions.width10/2,),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                onTap: () async{
-                  if(Get.find<AuthenticationPageController>().firebaseAuth.currentUser != null){
-                    if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
-                        Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
-
-                      await controller.registerNewDelivery();
-                      controller.addToHistoryList();
-
-                    }else{
-                      showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
-                    }
-                  }else{
-                    Get.toNamed(RouteHelper.signIn);
-                  }
-                },
-                child: Container(
+        return Visibility(
+          visible: !controller.loadingNewDelivery && !controller.isMessageSent ? true : false,
+          child: Container(
+            height: Dimensions.bottomHeightBar,
+            padding: EdgeInsets.only(top: Dimensions.height30,bottom: Dimensions.height30,left: Dimensions.width20,right: Dimensions.width20),
+            decoration: BoxDecoration(
+                color: AppColors.buttonBackGroundColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(Dimensions.radius20*2),
+                  topLeft: Radius.circular(Dimensions.radius20*2),
+                )
+            ),
+            child: _cartList.length>0 ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
                   padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                  child: BigText(text: "Confirmar", color: Colors.white,),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      color: AppColors.himalayaBlue
+                      color: Colors.white
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(width: Dimensions.width10/2,),
+                      BigText(
+                          text: "\$ ${controller.totalAmount.toString()}"
+                      ),
+                      SizedBox(width: Dimensions.width10/2,),
+                    ],
                   ),
                 ),
-              )
-            ],
-          ) : Container(),
+                GestureDetector(
+                  onTap: () async{
+                    if(Get.find<AuthenticationPageController>().firebaseAuth.currentUser != null){
+                      if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
+                          Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
+
+                        await controller.registerNewDelivery();
+                        controller.addToHistoryList();
+
+                      }else{
+                        showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
+                      }
+                    }else{
+                      Get.toNamed(RouteHelper.signIn);
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
+                    child: BigText(text: "Confirmar", color: Colors.white,),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimensions.radius20),
+                        color: AppColors.himalayaBlue
+                    ),
+                  ),
+                )
+              ],
+            ) : Container(),
+          ),
         );
       }),
     );

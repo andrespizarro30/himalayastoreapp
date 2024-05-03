@@ -28,6 +28,7 @@ class ProductsPageController extends GetxController{
   List<UsersModel> get deliveriesReceiverList => _deliveriesReceiverList;
 
   late CartController _cartController;
+  CartController get cartController  => _cartController;
 
   bool _isLoaded = false;
   bool get isLoaded =>_isLoaded;

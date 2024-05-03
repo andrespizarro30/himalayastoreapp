@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/authentication_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/models/deliveries_id_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,6 +121,53 @@ class CartRepo extends GetxService{
 
   }
 
+  void modifyCartHistoryListStatus(Deliveries delivery){
+
+    if(sharedPreferences.containsKey(AppConstants.CART_HISTORY_LIST)){
+      cartHistory = sharedPreferences.getStringList(AppConstants.CART_HISTORY_LIST)!;
+    }
+
+    if(cartHistory.isNotEmpty){
+
+      List<CartModel> carList = [];
+
+      cartHistory.forEach((cartModelString) {
+
+        var carModel = CartModel.fromJson(json.decode(cartModelString));
+
+        var time = DateTime.parse(carModel.time!);
+
+        var cartModelId = time.millisecondsSinceEpoch.toString();
+
+        if(delivery.deliveryId == cartModelId){
+
+          carModel.status = delivery.deliveryStatus;
+
+        }
+
+        carList.add(carModel);
+
+      });
+
+      carList.forEach((element) {
+        cart.add(json.encode(element.toJson()));
+      });
+
+      cartHistory.clear();
+      cartHistory = [];
+
+      cart.forEach((element) {
+        cartHistory.add(element);
+      });
+
+      clearCartHistory();
+
+      sharedPreferences.setStringList(AppConstants.CART_HISTORY_LIST, cartHistory);
+
+    }
+
+  }
+
   void removeCart(){
     cart = [];
     sharedPreferences.remove(AppConstants.CART_LIST);
@@ -191,6 +239,21 @@ class CartRepo extends GetxService{
     sharedPreferences.remove(AppConstants.CART_HISTORY_LIST);
   }
 
+  Future<Response> getDeliveryByUIDandID(String deliveryId) async {
+
+    var time = DateTime.parse(deliveryId);
+
+    deliveryId = time.millisecondsSinceEpoch.toString();
+
+    Map<String,String> data = {};
+
+    data['DeliveryId'] = deliveryId;
+    data['DeliveryUID'] = firebaseAuth.currentUser!.uid!;
+
+    return await apiClient.getDataWithQuery(AppConstants.DELIVERY_BY_UID_AND_ID,data);
+
+  }
+
   Future<Response> registerNewDeliveryId(String deliveryId)async{
 
     var time = DateTime.now();
@@ -202,11 +265,13 @@ class CartRepo extends GetxService{
     deliveries.deliveryDetailAddress = Get.find<MainPageController>().currentAddressDetailModel.detailAddress;
     deliveries.deliveryReferenceAddress = Get.find<MainPageController>().currentAddressDetailModel.referenceAddress;
     deliveries.deliveryCity = Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress;
+    deliveries.deliveryPhone = Get.find<AuthenticationPageController>().signUpBody.phone;
+    deliveries.deliveryEmail = Get.find<AuthenticationPageController>().signUpBody.email;
     deliveries.deliveryPosition = Get.find<MainPageController>().currentAddressDetailModel.position;
     deliveries.deliveryDate = "${time.year}-${time.month}-${time.day} ${time.hour}:${time.minute}:${time.second}";
     deliveries.deliveryToken = sharedPreferences.getString(AppConstants.FIRESTORE_TOKENS);
     deliveries.deliveryId = deliveryId;
-    deliveries.deliverySent = "NO";
+    deliveries.deliveryStatus = "EN";
 
     return await apiClient.postData(AppConstants.REGISTER_NEW_DELIVERY_ID, deliveries.toJson());
 
@@ -222,7 +287,7 @@ class CartRepo extends GetxService{
     deliveriesDetail.productName = cartModel.name;
     deliveriesDetail.productPrice = cartModel.price;
     deliveriesDetail.productQty = cartModel.quantity;
-    deliveriesDetail.productSent = "NO";
+    deliveriesDetail.status = "EN";
 
     return await apiClient.postData(AppConstants.REGISTER_NEW_DELIVERY_ID_DETAIL, deliveriesDetail.toJson());
 
