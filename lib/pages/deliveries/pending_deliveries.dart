@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart';
+import 'package:himalayastoreapp/pages/deliveries/pending_deliveriy_details.dart';
 
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
@@ -105,7 +106,8 @@ class PendingDeliveriesScreen extends StatelessWidget {
                                     SizedBox(width: Dimensions.width10,),
                                     GestureDetector(
                                       onTap: (){
-
+                                        controller.clearPendingDeliveryDetails();
+                                        Get.to(() => PendingDeliveryDetailScreen(delivery: controller.pendingDeliveriesList[index],),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
                                       },
                                       child: Icon(Icons.chevron_right)
                                     )

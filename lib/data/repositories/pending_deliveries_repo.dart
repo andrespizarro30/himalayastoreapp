@@ -26,6 +26,17 @@ class PendingDeliveriesRepo{
 
   }
 
+  Future<Response> getPendingDeliveriesIdDetails(Deliveries delivery) async {
+
+    Map<String,String> data = {};
+
+    data['DeliveryId'] = delivery.deliveryId!;
+    data['DeliveryUID'] = delivery.deliveryUID!;
+
+    return await apiClient.getDataWithQuery(AppConstants.DELIVERIES_DETAIL_LIST,data);
+
+  }
+
   Future<Response> updateDeliveryIdStatus(Deliveries delivery,String newStatus) async{
 
     Map<String,String> data = {};

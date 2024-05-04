@@ -3,6 +3,7 @@
 import 'package:get/get.dart';
 
 import '../data/repositories/pending_deliveries_repo.dart';
+import '../models/deliveries_id_details_model.dart';
 import '../models/deliveries_id_model.dart';
 import '../utils/dimensions.dart';
 
@@ -20,6 +21,9 @@ class PendingDeliviresController extends GetxController{
 
   List<Deliveries> _pendingDeliveriesList = [];
   List<Deliveries> get pendingDeliveriesList => _pendingDeliveriesList;
+
+  List<DeliveriesDetail> _pendingDeliveryDetailList = [];
+  List<DeliveriesDetail> get pendingDeliveryDetailList => _pendingDeliveryDetailList;
 
   bool _isLoading = false;
   bool get isLoading =>_isLoading;
@@ -45,6 +49,35 @@ class PendingDeliviresController extends GetxController{
 
     update();
 
+  }
+
+  Future<void> getPendingDeliveriesIdDetails(Deliveries delivery) async {
+
+    Response response = await pendingDeliveriesRepo.getPendingDeliveriesIdDetails(delivery);
+    if(response.statusCode == 200){
+      _pendingDeliveryDetailList=[];
+      _pendingDeliveryDetailList.addAll(DeliveriesDetailsList.fromJson(response.body).deliveriesDetailsList);
+    }else{
+
+    }
+
+    update();
+
+  }
+
+  int get totalAmount{
+
+    var total = 0;
+
+    _pendingDeliveryDetailList.forEach((product) {
+      total += product.productPrice! * product.productQty!;
+    });
+
+    return total;
+  }
+
+  void clearPendingDeliveryDetails(){
+    _pendingDeliveryDetailList=[];
   }
 
   void openStatusChangeRequestContainer(){

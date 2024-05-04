@@ -288,6 +288,7 @@ class CartRepo extends GetxService{
     deliveriesDetail.productPrice = cartModel.price;
     deliveriesDetail.productQty = cartModel.quantity;
     deliveriesDetail.status = "EN";
+    deliveriesDetail.productImg = cartModel.img;
 
     return await apiClient.postData(AppConstants.REGISTER_NEW_DELIVERY_ID_DETAIL, deliveriesDetail.toJson());
 

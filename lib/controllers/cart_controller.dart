@@ -165,6 +165,7 @@ class CartController extends GetxController{
     Map<int,CartModel> moreOrderItems =Map();
 
     oneMoreItems.forEach((element) {
+      element.status = "EN";
       moreOrderItems.putIfAbsent(element.id!, () => element);
     });
 

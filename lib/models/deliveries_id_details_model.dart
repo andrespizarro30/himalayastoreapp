@@ -1,7 +1,7 @@
 class DeliveriesDetailsList {
 
-  List<DeliveriesDetail>? _deliveriesDetailsList;
-  List<DeliveriesDetail>? get deliveriesDetailsList => _deliveriesDetailsList;
+  List<DeliveriesDetail> _deliveriesDetailsList = [];
+  List<DeliveriesDetail> get deliveriesDetailsList => _deliveriesDetailsList;
 
   DeliveriesDetailsList({required deliveriesDetailsList}){
     _deliveriesDetailsList=deliveriesDetailsList;
@@ -35,6 +35,7 @@ class DeliveriesDetail {
   int? productPrice;
   int? productQty;
   String? status;
+  String? productImg;
 
   DeliveriesDetail(
       {this.id,
@@ -44,7 +45,8 @@ class DeliveriesDetail {
         this.productName,
         this.productPrice,
         this.productQty,
-        this.status});
+        this.status,
+        this.productImg});
 
   DeliveriesDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -55,6 +57,7 @@ class DeliveriesDetail {
     productPrice = json['ProductPrice'];
     productQty = json['ProductQty'];
     status = json['Status'];
+    productImg = json['ProductImg'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,6 +70,7 @@ class DeliveriesDetail {
     data['ProductPrice'] = this.productPrice;
     data['ProductQty'] = this.productQty;
     data['Status'] = this.status;
+    data['ProductImg'] = this.productImg;
     return data;
   }
 }
