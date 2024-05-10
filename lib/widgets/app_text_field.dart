@@ -10,6 +10,7 @@ class AppTextField extends StatelessWidget {
   final IconData icon;
   final TextInputType textInputType;
   final bool isPassword;
+  final int maxLines;
 
   AppTextField({
     super.key,
@@ -17,7 +18,8 @@ class AppTextField extends StatelessWidget {
     required this.textHint,
     required this.icon,
     required this.textInputType,
-    this.isPassword = false
+    this.isPassword = false,
+    this.maxLines = 1
   });
 
   @override
@@ -41,6 +43,8 @@ class AppTextField extends StatelessWidget {
         keyboardType: textInputType,
         controller: textEditingController,
         obscureText: isPassword,
+        maxLines: maxLines,
+        textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
           hintText: textHint,
           prefixIcon: Icon(icon, color: AppColors.himalayaGrey,),

@@ -77,7 +77,7 @@ class SignUpScreen extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: Dimensions.radius20 * 4,
-                      backgroundImage: AssetImage("assets/image/himalaya_logo.png"),
+                      backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
                     ),
                   ),
                 ),
@@ -191,7 +191,7 @@ class SignUpScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: CircleAvatar(
                       radius: Dimensions.radius20,
-                      backgroundImage: AssetImage("assets/image/${signUpImages[index]}"),
+                      backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
                     ),
                   ))
               )

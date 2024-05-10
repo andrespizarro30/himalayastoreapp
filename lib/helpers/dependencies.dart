@@ -5,15 +5,20 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/cart_controller.dart';
+import 'package:himalayastoreapp/controllers/credit_card_page_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart';
+import 'package:himalayastoreapp/controllers/product_rating_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/controllers/select_address_page_controller.dart';
+import 'package:himalayastoreapp/data/apis/payment_api.dart';
 import 'package:himalayastoreapp/data/repositories/cart_repo.dart';
+import 'package:himalayastoreapp/data/repositories/credit_card_reposity.dart';
 import 'package:himalayastoreapp/data/repositories/google_map_repository.dart';
 import 'package:himalayastoreapp/data/repositories/main_page_repository.dart';
 import 'package:himalayastoreapp/data/repositories/pending_deliveries_repo.dart';
+import 'package:himalayastoreapp/data/repositories/product_rating_repo.dart';
 import 'package:himalayastoreapp/data/repositories/products_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,14 +50,17 @@ Future<void> init() async{
   //api client
   Get.lazyPut(()=>ApiClient(appBaseUrl: AppConstants.BASE_URL));
   Get.lazyPut(()=>GoogleMapsApiClient(appBaseUrl: AppConstants.GOOGLE_MAPS_API_BASE_URL));
+  Get.lazyPut(()=>PaymentApi(appBaseUrl: AppConstants.PAYMENTS_BASE_URL));
 
   //repos
   Get.lazyPut(() => ProductsRepository(apiClient: Get.find()));
-  Get.lazyPut(() => CartRepo(sharedPreferences: sharedPreferences, apiClient: Get.find(),firebaseAuth: Get.find()));
+  Get.lazyPut(() => CartRepo(sharedPreferences: sharedPreferences, apiClient: Get.find(), paymentApi: Get.find(),firebaseAuth: Get.find()));
   Get.lazyPut(() => AuthenticationRepo(firebaseAuth: Get.find(),apiClient: Get.find(),sharedPreferences: Get.find()));
   Get.lazyPut(() => MainPageRepo(sharedPreferences: Get.find()));
   Get.lazyPut(() => GoogleMapRepo(googleMapsApiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => PendingDeliveriesRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
+  Get.lazyPut(() => ProductRatingRepo(sharedPreferences: Get.find(), apiClient: Get.find(), firebaseAuth: Get.find()));
+  Get.lazyPut(() => CreditCardRepository(sharedPreferences: Get.find()));
 
 
   //controllers
@@ -63,6 +71,7 @@ Future<void> init() async{
   Get.lazyPut(() => MainPageController(mainPageRepo: Get.find()));
   Get.lazyPut(() => SelectAddressPageController(googleMapRepo: Get.find()));
   Get.lazyPut(() => PendingDeliviresController(pendingDeliveriesRepo: Get.find()));
-
+  Get.lazyPut(() => ProductRatingController(productRatingRepo: Get.find()));
+  Get.lazyPut(() => CreditCardController(creditCardRepository: Get.find()));
 
 }

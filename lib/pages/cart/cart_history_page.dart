@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../base/show_custom_message.dart';
 import '../../controllers/cart_controller.dart';
 import '../../models/cart_model.dart';
 import '../../routes/route_helper.dart';
@@ -11,6 +13,7 @@ import '../../utils/dimensions.dart';
 import '../../widgets/app_icon.dart';
 import '../../widgets/big_text.dart';
 import '../../widgets/small_text.dart';
+import '../rating/rate_product.dart';
 import 'cart_empty_page.dart';
 
 class CartHistoryScreen extends StatelessWidget {
@@ -161,11 +164,8 @@ class CartHistoryScreen extends StatelessWidget {
                                               BigText(text: "${cartModelList.length} Items",size: Dimensions.font20,color: AppColors.titleColor,),
                                               GestureDetector(
                                                 onTap: (){
-
                                                   List<CartModel> cartModelList = groupHistoryDataMap.values.elementAt(index);
-
                                                   controller.setOneMoreCartItems = cartModelList;
-
                                                 },
                                                 child: Container(
                                                   padding: EdgeInsets.symmetric(horizontal: Dimensions.width10,vertical: Dimensions.height10/2),
@@ -187,7 +187,37 @@ class CartHistoryScreen extends StatelessWidget {
                                   BigText(text: "Status: En proceso",color: AppColors.himalayaBlue,size: Dimensions.font16) :
                                   cartModelList[0].status == "CA" ?
                                   BigText(text: "Status: En camino",color: Colors.green,size: Dimensions.font16) :
-                                  BigText(text: "Status: Recibido",color: Colors.orange,size: Dimensions.font16)
+                                  cartModelList[0].status == "QU" ?
+                                  BigText(text: "Status: Recibido",color: Colors.orange,size: Dimensions.font16) :
+                                  Row(
+                                    children: [
+                                      BigText(text: "Status: Recibido",color: Colors.orange,size: Dimensions.font16),
+                                      SizedBox(
+                                        width: Dimensions.width20,
+                                      ),
+                                      RichText(
+                                          text: TextSpan(
+                                              text: "Calificanos ",
+                                              style: TextStyle(
+                                                  color: Colors.grey[500],
+                                                  fontSize: Dimensions.font16
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                    recognizer: TapGestureRecognizer()..onTap=()=>Get.to(() => ProductRatingScreen(cartModelList: cartModelList,),transition: Transition.circularReveal,duration: Duration(milliseconds: 600)),
+                                                    text: "aquí",
+                                                    style: TextStyle(
+                                                      color: AppColors.mainBlackColor,
+                                                      fontSize: Dimensions.font16,
+                                                      fontWeight: FontWeight.bold,
+
+                                                    )
+                                                )
+                                              ]
+                                          )
+                                      )
+                                    ],
+                                  )
                                 ],
                               ),
                             );
@@ -195,7 +225,7 @@ class CartHistoryScreen extends StatelessWidget {
                       ) :
                       NoDataPage(
                         text: "Haz tu primera orden...",
-                        imgPath: "assets/image/empty_box.png",
+                        imgPath: "assets/images/empty_box.png",
                       );
                     }),
                   )

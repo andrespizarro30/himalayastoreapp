@@ -66,7 +66,7 @@ class SignInScreen extends StatelessWidget {
                       child: CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: Dimensions.radius20 * 4,
-                        backgroundImage: AssetImage("assets/image/himalaya_logo.png"),
+                        backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
                       ),
                     ),
                   ),

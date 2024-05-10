@@ -50,7 +50,7 @@ class SearchAddressPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Image.asset(
-                          "assets/image/powered-by-google.png",
+                          "assets/images/powered-by-google.png",
                           height: Dimensions.height40,
                           width: Dimensions.width40*2.5,
                         ),

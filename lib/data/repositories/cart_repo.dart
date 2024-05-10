@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/authentication_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
+import 'package:himalayastoreapp/data/apis/payment_api.dart';
 import 'package:himalayastoreapp/models/deliveries_id_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ import '../../models/cart_model.dart';
 import 'package:collection/collection.dart';
 
 import '../../models/deliveries_id_details_model.dart';
+import '../../models/payment_models/credit_card_payment_send_model.dart';
 import '../../models/user_model.dart';
 import '../../utils/app_constants.dart';
 import '../apis/api_client.dart';
@@ -22,11 +24,13 @@ class CartRepo extends GetxService{
 
   final SharedPreferences sharedPreferences;
   final ApiClient apiClient;
+  final PaymentApi paymentApi;
   final FirebaseAuth firebaseAuth;
 
   CartRepo({
     required this.sharedPreferences,
     required this.apiClient,
+    required this.paymentApi,
     required this.firebaseAuth
   });
 
@@ -251,6 +255,24 @@ class CartRepo extends GetxService{
     data['DeliveryUID'] = firebaseAuth.currentUser!.uid!;
 
     return await apiClient.getDataWithQuery(AppConstants.DELIVERY_BY_UID_AND_ID,data);
+
+  }
+
+  Future<String> getPaymentToken() async{
+
+    Response response = await paymentApi.getToken(AppConstants.PAYMENT_LOGIN);
+
+    String token = response.body["token"];
+
+    paymentApi.updateHeader(token);
+
+    return token;
+
+  }
+
+  Future<Response> creditCardPayment(CreditCardPaymentSend creditCardPaymentSend) async{
+
+    return await paymentApi.postData(AppConstants.CREDIT_CARD_PAYMENT,creditCardPaymentSend.toJson());
 
   }
 

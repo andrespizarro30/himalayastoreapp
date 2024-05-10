@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 
 
 import '../utils/app_colors.dart';
@@ -15,12 +18,17 @@ class ColumnProductDetail extends StatelessWidget {
   final String text;
   final int starts;
   final int product_qty_available;
+  bool seeComment;
+  int productId;
 
-  const ColumnProductDetail({
+
+  ColumnProductDetail({
     super.key,
     required this.text,
     required this.starts,
-    required this.product_qty_available
+    required this.product_qty_available,
+    this.seeComment = false,
+    this.productId = 0
   });
 
   @override
@@ -38,9 +46,32 @@ class ColumnProductDetail extends StatelessWidget {
             SizedBox(width: 10,),
             SmallText(text: starts.toString()),
             SizedBox(width: 10,),
-            SmallText(text: "888"),
-            SizedBox(width: 10),
-            SmallText(text: "comments"),
+            seeComment ?
+            RichText(
+                text: TextSpan(
+                    text: "ver ",
+                    style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: Dimensions.font16
+                    ),
+                    children: [
+                      TextSpan(
+                          recognizer: TapGestureRecognizer()..onTap=(){
+                            Get.find<ProductsPageController>().openCommentContainer();
+                            Get.find<ProductsPageController>().getProductRating(productId.toString());
+                          },
+                          text: "Comentarios",
+                          style: TextStyle(
+                            color: AppColors.mainBlackColor,
+                            fontSize: Dimensions.font16,
+                            fontWeight: FontWeight.bold,
+
+                          )
+                      )
+                    ]
+                )
+            ):
+            SizedBox(width: 0,height: 0,)
           ],
         ),
         SizedBox(height: Dimensions.height10,),

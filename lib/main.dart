@@ -1,9 +1,15 @@
+import 'dart:async';
+import 'dart:isolate';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/authentication_controller.dart';
+import 'package:himalayastoreapp/controllers/credit_card_page_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart';
+import 'package:himalayastoreapp/controllers/product_rating_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 
@@ -24,6 +30,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetBuilder<ProductsPageController>(builder: (_){
       return GetBuilder<ProductPagerViewController>(builder: (_){
         return GetBuilder<AuthenticationPageController>(builder: (_){
@@ -31,12 +38,16 @@ class MyApp extends StatelessWidget {
             return GetBuilder<MainPageController>(builder: (_){
               return GetBuilder<SelectAddressPageController>(builder: (_){
                 return GetBuilder<PendingDeliviresController>(builder: (_){
-                  return GetMaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    //home: SignInPage(),
-                    initialRoute: RouteHelper.getSplash(),
-                    getPages: RouteHelper.routes,
-                  );
+                  return GetBuilder<ProductRatingController>(builder: (_){
+                    return GetBuilder<CreditCardController>(builder: (_){
+                      return GetMaterialApp(
+                        debugShowCheckedModeBanner: false,
+                        //home: SignInPage(),
+                        initialRoute: RouteHelper.getSplash(),
+                        getPages: RouteHelper.routes,
+                      );
+                    });
+                  });
                 });
               });
             });
@@ -45,4 +56,5 @@ class MyApp extends StatelessWidget {
       });
     });
   }
+
 }

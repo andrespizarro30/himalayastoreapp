@@ -42,4 +42,14 @@ class ProductsRepository extends GetxService{
 
   }
 
+  Future<Response> getProductRating(String product_id) async {
+
+    Map<String,String> data = {};
+
+    data['product_id'] = product_id;
+
+    return await apiClient.getDataWithQuery(AppConstants.RATING_PRODUCTS_LIST,data);
+
+  }
+
 }

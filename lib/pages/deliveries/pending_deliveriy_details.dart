@@ -28,7 +28,7 @@ class PendingDeliveryDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detalles del pedido"),
+        title: Text("Detalle del pedido"),
       ),
       body: GetBuilder<PendingDeliviresController>(builder: (controller){
         return controller.pendingDeliveryDetailList.isNotEmpty ?
@@ -42,24 +42,19 @@ class PendingDeliveryDetailScreen extends StatelessWidget {
                   width: double.maxFinite,
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: (){
-
-                        },
-                        child: Container(
-                          width: Dimensions.width20 * 5,
-                          height: Dimensions.height20 * 5,
-                          margin: EdgeInsets.only(bottom: Dimensions.height10),
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                      controller.pendingDeliveryDetailList[index].productImg!
-                                  )
-                              ),
-                              borderRadius: BorderRadius.circular(Dimensions.radius20),
-                              color: Colors.white
-                          ),
+                      Container(
+                        width: Dimensions.width20 * 5,
+                        height: Dimensions.height20 * 5,
+                        margin: EdgeInsets.only(bottom: Dimensions.height10),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                    controller.pendingDeliveryDetailList[index].productImg!
+                                )
+                            ),
+                            borderRadius: BorderRadius.circular(Dimensions.radius20),
+                            color: Colors.white
                         ),
                       ),
                       SizedBox(width: Dimensions.width10,),

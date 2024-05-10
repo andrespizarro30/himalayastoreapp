@@ -112,7 +112,7 @@ class ProductModel {
     productDescription = json['product_description'];
     productPrice = json['product_price'];
     productCategory = json['product_category'];
-    productStars = json['product_stars'];
+    productStars = double.parse(json['product_stars'].toString()).round();
     productImage = json['product_image'];
     productImage2 = json['Product_Image_2'];
     mainTitle = json['Main_Title'];

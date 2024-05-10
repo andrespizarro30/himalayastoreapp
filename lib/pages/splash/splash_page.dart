@@ -60,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         scale: animation,
         child: Center(
           child: Image.asset(
-            "assets/image/himalaya_logo.png",
+            "assets/images/himalaya_logo.png",
             width: Dimensions.splashImg,
           ),
         ),

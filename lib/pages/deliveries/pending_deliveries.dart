@@ -121,7 +121,7 @@ class PendingDeliveriesScreen extends StatelessWidget {
                     ) :
                     NoDataPage(
                       text: "No hay pedidos aún !!!",
-                      imgPath: "assets/image/empty_box.png",
+                      imgPath: "assets/images/empty_box.png",
                     )
                   )
               ),
@@ -268,7 +268,7 @@ class PendingDeliveriesScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/image/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
                   SizedBox(height: Dimensions.height20,),
                   controller.isStatusUpdated == "OK" ?
                   Text("Status actualizado correctamente") :

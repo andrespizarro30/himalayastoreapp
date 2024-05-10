@@ -17,6 +17,8 @@ class AppConstants{
   static const String UPDATE_DELIVERY_ID_STATUS = "/api/deliveryIdStatus/put";
   static const String DELIVERIES_DETAIL_LIST = '/api/deliveriesDetailsList/get';
   static const String REGISTER_NEW_DELIVERY_ID_DETAIL = '/api/registerNewDeliveryDetail/post';
+  static const String REGISTER_PRODUCT_RATING = '/api/registerproductrating/post';
+  static const String RATING_PRODUCTS_LIST = '/api/productrating/get';
 
   static const String FIREBASE_MESSAGING_AUTH_TOKEN = "AAAAh5w2eLs:APA91bGm5wCm_hD9DyRiy-1D-OAn5pThJzDGEuN7VxNAHO74QBCEoWgvxJJfAaIcRhECKZkqMKfrbqw0hK-lOHqSw3_WWtnL98mHTmc13g0-tdqXhZ0Wk1HqEDvQLRJOO67Zv6Sk8czO";
 
@@ -34,4 +36,14 @@ class AppConstants{
 
   static const String CART_LIST = "CartList";
   static const String CART_HISTORY_LIST = "CartHistoryList";
+
+  static const String SAVED_CREDIT_CARDS = "CreditCardsList";
+  static const String CURRENT_SELECTED_PAYMENT = "CurrentSelectedPayment";
+  static const String PSE_PAYMENT_METHOD = "Pago PSE";
+
+  static const String PAYMENTS_BASE_URL = "https://apify.epayco.co";
+  static const String PAYMENT_LOGIN = "/login";
+  static const String CREDIT_CARD_PAYMENT = "/payment/process";
+  static const String PSE_PAYMENT = "/payment/process/pse";
+
 }

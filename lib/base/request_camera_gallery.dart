@@ -112,7 +112,7 @@ class _RequestCameraOrGalleryState extends State<RequestCameraOrGallery> {
                   ],
                 ),
                 style: ElevatedButton.styleFrom(
-                    primary: AppColors.himalayaBlue
+                    backgroundColor: AppColors.himalayaBlue
                 ),
               ),
             ),

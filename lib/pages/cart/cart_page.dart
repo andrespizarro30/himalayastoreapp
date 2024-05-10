@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
+import 'package:himalayastoreapp/pages/cart/payment_page.dart';
 
 import '../../base/show_custom_message.dart';
 import '../../controllers/authentication_controller.dart';
@@ -29,7 +30,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<CartController>(builder: (controller){
-        return !controller.loadingNewDelivery && !controller.isMessageSent ? Stack(
+        return !controller.doingPayment && !controller.loadingNewDelivery && !controller.isMessageSent ? Stack(
           children: [
             Positioned(
                 top: Dimensions.height20*3,
@@ -202,7 +203,7 @@ class CartScreen extends StatelessWidget {
             )
           ],
         ):
-        controller.loadingNewDelivery && !controller.isMessageSent ?
+        !controller.doingPayment &&  controller.loadingNewDelivery && !controller.isMessageSent ?
         Container(
             height: Dimensions.screenHeight,
             width: double.infinity,
@@ -224,7 +225,32 @@ class CartScreen extends StatelessWidget {
               ),
             )
         ):
+        controller.doingPayment &&  !controller.loadingNewDelivery && !controller.isMessageSent ?
         Container(
+            height: Dimensions.screenHeight,
+            width: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: AppColors.himalayaBlue,
+                    ),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
+                    Text("Realizando el pago... por favor espere...")
+                  ],
+                ),
+              ),
+            )
+        ):
+        !controller.doingPayment && controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada" &&  controller.loadingNewDelivery && controller.isMessageSent ?
+        Container(
+          height: Dimensions.screenHeight,
+          width: double.infinity,
           color: Colors.white,
           child: Center(
             child: Container(
@@ -232,9 +258,57 @@ class CartScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset("assets/image/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
                   SizedBox(height: Dimensions.height20,),
-                  Text("Pedido enviado correctamente, espere la confirmación de la tienda"),
+                  Text("Pedido pagado y enviado correctamente, espere la confirmación de la tienda"),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Pago Aceptado",style: TextStyle(color: Colors.green),),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Referencia de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.refPayco.toString()}"),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Fecha de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.fecha}"),
+                  SizedBox(height: Dimensions.height20,),
+                  RawMaterialButton(
+                    onPressed: () {
+                      controller.cleanAfterSent();
+                      if(page.isNotEmpty){
+                        Navigator.pop(context);
+                      }
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.check,
+                      size: 35.0,
+                      color: Colors.green,
+                    ),
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ):
+        !controller.doingPayment && controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Rechazada" &&  !controller.loadingNewDelivery && controller.isMessageSent ?
+        Container(
+          height: Dimensions.screenHeight,
+          width: double.infinity,
+          color: Colors.white,
+          child: Center(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Pago Rechazado, intente nuevamente",style: TextStyle(color: Colors.red),),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Referencia de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.refPayco.toString()}"),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Fecha de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.fecha}"),
+                  SizedBox(height: Dimensions.height20,),
                   SizedBox(height: Dimensions.height20,),
                   RawMaterialButton(
                     onPressed: () {
@@ -248,6 +322,7 @@ class CartScreen extends StatelessWidget {
                     child: Icon(
                       Icons.close,
                       size: 35.0,
+                      color: Colors.red,
                     ),
                     padding: EdgeInsets.all(15.0),
                     shape: CircleBorder(),
@@ -256,6 +331,11 @@ class CartScreen extends StatelessWidget {
               ),
             ),
           ),
+        ):
+        Container(
+          height: Dimensions.screenHeight,
+          width: double.infinity,
+          color: Colors.green,
         );
       }),
       bottomNavigationBar: GetBuilder<CartController>(builder: (controller){
@@ -263,10 +343,10 @@ class CartScreen extends StatelessWidget {
         var _cartList = controller.getItems;
 
         return Visibility(
-          visible: !controller.loadingNewDelivery && !controller.isMessageSent ? true : false,
+          visible: !controller.doingPayment && !controller.loadingNewDelivery && !controller.isMessageSent ? true : false,
           child: Container(
             height: Dimensions.bottomHeightBar,
-            padding: EdgeInsets.only(top: Dimensions.height30,bottom: Dimensions.height30,left: Dimensions.width20,right: Dimensions.width20),
+            padding: EdgeInsets.only(top: Dimensions.height30,bottom: Dimensions.height30,left: Dimensions.width40,right: Dimensions.width40),
             decoration: BoxDecoration(
                 color: AppColors.buttonBackGroundColor,
                 borderRadius: BorderRadius.only(
@@ -277,21 +357,14 @@ class CartScreen extends StatelessWidget {
             child: _cartList.length>0 ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      color: Colors.white
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(width: Dimensions.width10/2,),
-                      BigText(
-                          text: "\$ ${controller.totalAmount.toString()}"
-                      ),
-                      SizedBox(width: Dimensions.width10/2,),
-                    ],
-                  ),
+                Column(
+                  children: [
+                    SmallText(text: "Sub total",color: AppColors.mainBlackColor,),
+                    SizedBox(height: Dimensions.height10,),
+                    BigText(
+                        text: "\$ ${controller.totalAmount.toString()}"
+                    ),
+                  ],
                 ),
                 GestureDetector(
                   onTap: () async{
@@ -299,8 +372,7 @@ class CartScreen extends StatelessWidget {
                       if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
                           Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
 
-                        await controller.registerNewDelivery();
-                        controller.addToHistoryList();
+                        Get.to(() => PaymentScreen(),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
 
                       }else{
                         showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
@@ -310,8 +382,8 @@ class CartScreen extends StatelessWidget {
                     }
                   },
                   child: Container(
-                    padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                    child: BigText(text: "Confirmar", color: Colors.white,),
+                    padding: EdgeInsets.only(top: Dimensions.height10,bottom: Dimensions.height10,right: Dimensions.width40,left: Dimensions.width40),
+                    child: BigText(text: "Ir a pagar", color: Colors.white,),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(Dimensions.radius20),
                         color: AppColors.himalayaBlue

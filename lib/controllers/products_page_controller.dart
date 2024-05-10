@@ -5,10 +5,12 @@ import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart
 
 import '../data/repositories/products_repository.dart';
 import '../models/cart_model.dart';
+import '../models/product_rating_model.dart';
 import '../models/products_category_list_model.dart';
 import '../models/products_list_model.dart';
 import '../models/user_model.dart';
 import '../utils/app_colors.dart';
+import '../utils/dimensions.dart';
 import 'cart_controller.dart';
 
 class ProductsPageController extends GetxController{
@@ -27,6 +29,12 @@ class ProductsPageController extends GetxController{
   List<UsersModel> _deliveriesReceiverList=[];
   List<UsersModel> get deliveriesReceiverList => _deliveriesReceiverList;
 
+  double _commentContainerHeight = 0;
+  double get commentContainerHeight  => _commentContainerHeight;
+
+  bool _isOpenCommentsContainer = false;
+  bool get isOpenCommentsContainer => _isOpenCommentsContainer;
+
   late CartController _cartController;
   CartController get cartController  => _cartController;
 
@@ -38,6 +46,12 @@ class ProductsPageController extends GetxController{
 
   int _inCartItems = 0;
   int get inCartItems => _inCartItems + _quantity;
+
+  List<RatingProduct> _ratingsProductList=[];
+  List<RatingProduct> get ratingsProductList => _ratingsProductList;
+
+  bool _loadingComments = false;
+  bool get loadingComments => _loadingComments;
 
   Future<void> getProductsCategoriesList()async{
     Response response = await productsRepository.getProductsCategoriesList();
@@ -146,6 +160,62 @@ class ProductsPageController extends GetxController{
 
   List<CartModel> get getItems{
     return _cartController.getItems;
+  }
+
+  void openCommentContainer(){
+
+    _isOpenCommentsContainer = !_isOpenCommentsContainer;
+
+    _commentContainerHeight = _isOpenCommentsContainer ? Dimensions.screenHeight * 0.7 : 0;
+
+    _ratingsProductList=[];
+
+    update();
+
+  }
+
+  void closeDraggingUpdateAddressRequestContainer(double dy){
+
+    _commentContainerHeight = _commentContainerHeight - dy;
+    if(_commentContainerHeight<Dimensions.screenHeight * 0.3){
+      _isOpenCommentsContainer = false;
+    }else{
+      _isOpenCommentsContainer = true;
+    }
+
+    update();
+
+  }
+
+  void closeDraggingEndAddressRequestContainer(){
+
+    if(_commentContainerHeight<Dimensions.screenHeight * 0.3){
+      _isOpenCommentsContainer = false;
+      _commentContainerHeight=0;
+    }else{
+      _commentContainerHeight = Dimensions.screenHeight * 0.7;
+    }
+
+    update();
+
+  }
+
+  Future<void> getProductRating(String product_id) async {
+
+    _loadingComments = true;
+    update();
+
+    Response response = await productsRepository.getProductRating(product_id);
+    if(response.statusCode == 200){
+      _ratingsProductList=[];
+      _ratingsProductList.addAll(RatingProductList.fromJson(response.body).ratingProduct);
+    }else{
+
+    }
+
+    _loadingComments = false;
+    update();
+
   }
 
 

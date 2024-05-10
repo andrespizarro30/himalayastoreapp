@@ -1,12 +1,20 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/base/show_custom_message.dart';
+import 'package:himalayastoreapp/controllers/authentication_controller.dart';
+import 'package:himalayastoreapp/controllers/credit_card_page_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/models/user_model.dart';
+import 'package:himalayastoreapp/utils/app_constants.dart';
 
 import '../data/repositories/cart_repo.dart';
 import '../models/cart_model.dart';
 import '../models/deliveries_id_model.dart';
+import '../models/payment_models/credit_card_payment_response_model.dart';
+import '../models/payment_models/credit_card_payment_send_model.dart';
 import '../models/products_list_model.dart';
 import '../utils/app_colors.dart';
 import 'products_page_controller.dart';
@@ -26,11 +34,17 @@ class CartController extends GetxController{
   bool _loadingNewDelivery = false;
   bool get loadingNewDelivery => _loadingNewDelivery;
 
+  bool _doingPayment = false;
+  bool get doingPayment => _doingPayment;
+
   bool _isMessageSent = false;
   bool get isMessageSent => _isMessageSent;
 
   Map<String,List<CartModel>> _cartItemsPerOrder = Map();
   Map<String,List<CartModel>> get cartItemsPerOrder => _cartItemsPerOrder;
+
+  CreditCardPaymentResponse _creditCardPaymentResponse = CreditCardPaymentResponse();
+  CreditCardPaymentResponse get creditCardPaymentResponse => _creditCardPaymentResponse;
 
   void addItem(ProductModel product, int quantity){
 
@@ -234,6 +248,57 @@ class CartController extends GetxController{
 
   }
 
+  Future<void> getPaymentToken(CreditCardController creditCardController) async{
+
+    _doingPayment = true;
+    update();
+
+    String token = await cartRepo.getPaymentToken();
+
+    if(token.isNotEmpty){
+      if(Get.find<CreditCardController>().currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD){
+        //PAGO TARJETA DE CREDITO
+        CreditCardPaymentSend creditCardPaymentSend = CreditCardPaymentSend();
+        creditCardPaymentSend.value = "5000";
+        creditCardPaymentSend.docType = "CC";
+        creditCardPaymentSend.docNumber = "111111";
+        creditCardPaymentSend.name = creditCardController.currentSelectedPaymentMethod.cardHolderName;
+        creditCardPaymentSend.lastName = creditCardController.currentSelectedPaymentMethod.cardHolderLastName;
+        creditCardPaymentSend.email = Get.find<AuthenticationPageController>().signUpBody.email;
+        creditCardPaymentSend.cellPhone = Get.find<AuthenticationPageController>().signUpBody.phone;
+        creditCardPaymentSend.phone = "000000";
+        creditCardPaymentSend.cardNumber = creditCardController.currentSelectedPaymentMethod.cardNumber;
+        creditCardPaymentSend.cardExpYear = creditCardController.currentSelectedPaymentMethod.expYear;
+        creditCardPaymentSend.cardExpMonth = creditCardController.currentSelectedPaymentMethod.expMonth;
+        creditCardPaymentSend.cardCvc = creditCardController.currentSelectedPaymentMethod.cvv;
+        creditCardPaymentSend.dues = creditCardController.duesNumber.toString();
+
+        Response response = await cartRepo.creditCardPayment(creditCardPaymentSend);
+
+        _doingPayment = false;
+        update();
+
+        if(response.body["success"]){
+          _creditCardPaymentResponse = CreditCardPaymentResponse.fromJson(response.body);
+          if(creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada"){
+            await registerNewDelivery();
+            addToHistoryList();
+            showCustomSnackBar("Transacción Aceptada");
+          }else{
+            _isMessageSent = true;
+            showCustomSnackBar("Transacción rechazada, intente de nuevo");
+          }
+        }else{
+          _isMessageSent = true;
+          showCustomSnackBar("Transacción rechazada, intente de nuevo");
+        }
+      }else{
+        //PAGO PSE
+      }
+    }
+
+  }
+
   Future<void> registerNewDelivery()async{
 
     _loadingNewDelivery = true;
@@ -260,7 +325,9 @@ class CartController extends GetxController{
   }
 
   void cleanAfterSent(){
+    _creditCardPaymentResponse = CreditCardPaymentResponse();
     _isMessageSent=false;
+    _doingPayment=false;
     _loadingNewDelivery = false;
     update();
   }
