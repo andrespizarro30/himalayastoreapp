@@ -217,7 +217,8 @@ class CartHistoryScreen extends StatelessWidget {
                                           )
                                       )
                                     ],
-                                  )
+                                  ),
+                                  BigText(text: "Referencia de pago: ${cartModelList[0].payReference}",color: Colors.orange,size: Dimensions.font16)
                                 ],
                               ),
                             );

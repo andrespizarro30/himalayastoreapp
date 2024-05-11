@@ -71,6 +71,8 @@ class PendingDeliveriesScreen extends StatelessWidget {
                                           SizedBox(height: Dimensions.height10,),
                                           Text(controller!.pendingDeliveriesList![index].deliveryEmail!,maxLines: 2,overflow: TextOverflow.ellipsis,),
                                           SizedBox(height: Dimensions.height10,),
+                                          Text("Referencia de pago: ${controller!.pendingDeliveriesList![index].payReference!}",maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.green),),
+                                          SizedBox(height: Dimensions.height10,),
                                           SizedBox(height: Dimensions.height10,),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

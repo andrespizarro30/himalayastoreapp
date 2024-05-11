@@ -6,6 +6,7 @@ import 'package:himalayastoreapp/controllers/authentication_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/data/apis/payment_api.dart';
 import 'package:himalayastoreapp/models/deliveries_id_model.dart';
+import 'package:himalayastoreapp/models/payment_models/pse_payment_send_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/cart_model.dart';
@@ -101,14 +102,16 @@ class CartRepo extends GetxService{
 
   }
 
-  void addToCartHistoryList(){
+  void addToCartHistoryList(String payReference){
 
     if(sharedPreferences.containsKey(AppConstants.CART_HISTORY_LIST)){
       cartHistory = sharedPreferences.getStringList(AppConstants.CART_HISTORY_LIST)!;
     }
 
     cart.forEach((element) {
-      cartHistory.add(element);
+      CartModel elementCartModel = CartModel.fromJson(json.decode(element));
+      elementCartModel.payReference = payReference;
+      cartHistory.add(json.encode(elementCartModel.toJson()));
     });
 
     removeCart();
@@ -146,6 +149,7 @@ class CartRepo extends GetxService{
         if(delivery.deliveryId == cartModelId){
 
           carModel.status = delivery.deliveryStatus;
+          carModel.payReference = delivery.payReference;
 
         }
 
@@ -276,7 +280,22 @@ class CartRepo extends GetxService{
 
   }
 
-  Future<Response> registerNewDeliveryId(String deliveryId)async{
+  Future<Response> psePayment(PSEPaymentSend psePaymentSend) async{
+
+    return await paymentApi.postData(AppConstants.PSE_PAYMENT,psePaymentSend.toJson());
+
+  }
+
+  Future<Response> pseTransactionConfirm(String transactionID) async{
+
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['transactionID'] = int.parse(transactionID);
+
+    return await paymentApi.postData(AppConstants.TRANSACTION_CONFIRM,data);
+
+  }
+
+  Future<Response> registerNewDeliveryId(String deliveryId,String payReference)async{
 
     var time = DateTime.now();
 
@@ -294,6 +313,7 @@ class CartRepo extends GetxService{
     deliveries.deliveryToken = sharedPreferences.getString(AppConstants.FIRESTORE_TOKENS);
     deliveries.deliveryId = deliveryId;
     deliveries.deliveryStatus = "EN";
+    deliveries.payReference = payReference;
 
     return await apiClient.postData(AppConstants.REGISTER_NEW_DELIVERY_ID, deliveries.toJson());
 

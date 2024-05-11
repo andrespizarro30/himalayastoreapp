@@ -42,6 +42,7 @@ class Deliveries {
   String? deliveryToken;
   String? deliveryId;
   String? deliveryStatus;
+  String? payReference;
 
   Deliveries(
       {this.id,
@@ -57,7 +58,9 @@ class Deliveries {
         this.deliveryDate,
         this.deliveryToken,
         this.deliveryId,
-        this.deliveryStatus});
+        this.deliveryStatus,
+        this.payReference
+      });
 
   Deliveries.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -74,6 +77,7 @@ class Deliveries {
     deliveryToken = json['DeliveryToken'];
     deliveryId = json['DeliveryId'];
     deliveryStatus = json['DeliveryStatus'];
+    payReference = json['PayReference'];
   }
 
   Map<String, dynamic> toJson() {
@@ -92,6 +96,7 @@ class Deliveries {
     data['DeliveryToken'] = this.deliveryToken;
     data['DeliveryId'] = this.deliveryId;
     data['DeliveryStatus'] = this.deliveryStatus;
+    data['PayReference'] = this.payReference;
     return data;
   }
 }

@@ -14,6 +14,7 @@ class CartModel {
   String? time;
 
   String? status;
+  String? payReference;
 
   ProductModel? productModel;
 
@@ -27,6 +28,7 @@ class CartModel {
         this.isExist,
         this.time,
         this.status = "",
+        this.payReference = "",
         this.productModel
       });
 
@@ -40,6 +42,7 @@ class CartModel {
     isExist = json['isExist'];
     time = json['time'];
     status = json['status'];
+    payReference = json['payReference'];
     productModel = ProductModel.fromJson(json['product']);
   }
 
@@ -54,6 +57,7 @@ class CartModel {
     data['isExist'] = this.isExist;
     data['time'] = this.time;
     data['status'] = this.status;
+    data['payReference'] = this.payReference;
     data['product'] = this.productModel!.toJson();
     return data;
   }

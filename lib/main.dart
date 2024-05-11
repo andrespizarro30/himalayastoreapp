@@ -12,6 +12,7 @@ import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart'
 import 'package:himalayastoreapp/controllers/product_rating_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
+import 'package:himalayastoreapp/controllers/pse_payment_form_controller.dart';
 
 import 'controllers/cart_controller.dart';
 import 'controllers/select_address_page_controller.dart';
@@ -40,12 +41,14 @@ class MyApp extends StatelessWidget {
                 return GetBuilder<PendingDeliviresController>(builder: (_){
                   return GetBuilder<ProductRatingController>(builder: (_){
                     return GetBuilder<CreditCardController>(builder: (_){
-                      return GetMaterialApp(
-                        debugShowCheckedModeBanner: false,
-                        //home: SignInPage(),
-                        initialRoute: RouteHelper.getSplash(),
-                        getPages: RouteHelper.routes,
-                      );
+                      return GetBuilder<PSEPaymentFormController>(builder: (_){
+                        return GetMaterialApp(
+                          debugShowCheckedModeBanner: false,
+                          //home: SignInPage(),
+                          initialRoute: RouteHelper.getSplash(),
+                          getPages: RouteHelper.routes,
+                        );
+                      });
                     });
                   });
                 });

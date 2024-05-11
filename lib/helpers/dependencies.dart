@@ -11,6 +11,7 @@ import 'package:himalayastoreapp/controllers/pending_deliveries_controller.dart'
 import 'package:himalayastoreapp/controllers/product_rating_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
+import 'package:himalayastoreapp/controllers/pse_payment_form_controller.dart';
 import 'package:himalayastoreapp/controllers/select_address_page_controller.dart';
 import 'package:himalayastoreapp/data/apis/payment_api.dart';
 import 'package:himalayastoreapp/data/repositories/cart_repo.dart';
@@ -20,6 +21,7 @@ import 'package:himalayastoreapp/data/repositories/main_page_repository.dart';
 import 'package:himalayastoreapp/data/repositories/pending_deliveries_repo.dart';
 import 'package:himalayastoreapp/data/repositories/product_rating_repo.dart';
 import 'package:himalayastoreapp/data/repositories/products_repository.dart';
+import 'package:himalayastoreapp/data/repositories/pse_payment_form_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../controllers/authentication_controller.dart';
@@ -61,6 +63,7 @@ Future<void> init() async{
   Get.lazyPut(() => PendingDeliveriesRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
   Get.lazyPut(() => ProductRatingRepo(sharedPreferences: Get.find(), apiClient: Get.find(), firebaseAuth: Get.find()));
   Get.lazyPut(() => CreditCardRepository(sharedPreferences: Get.find()));
+  Get.lazyPut(() => PSEPaymentFormRepo(paymentApi: Get.find()));
 
 
   //controllers
@@ -73,5 +76,6 @@ Future<void> init() async{
   Get.lazyPut(() => PendingDeliviresController(pendingDeliveriesRepo: Get.find()));
   Get.lazyPut(() => ProductRatingController(productRatingRepo: Get.find()));
   Get.lazyPut(() => CreditCardController(creditCardRepository: Get.find()));
+  Get.lazyPut(() => PSEPaymentFormController(psePaymentRepo: Get.find()));
 
 }

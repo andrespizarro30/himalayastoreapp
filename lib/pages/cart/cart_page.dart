@@ -225,7 +225,7 @@ class CartScreen extends StatelessWidget {
               ),
             )
         ):
-        controller.doingPayment &&  !controller.loadingNewDelivery && !controller.isMessageSent ?
+        controller.doingPayment && !controller.loadingNewDelivery && !controller.isMessageSent ?
         Container(
             height: Dimensions.screenHeight,
             width: double.infinity,
@@ -247,8 +247,59 @@ class CartScreen extends StatelessWidget {
               ),
             )
         ):
-        !controller.doingPayment && controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada" &&  controller.loadingNewDelivery && controller.isMessageSent ?
-        Container(
+        controller.creditCardPaymentResponse.data != null &&
+          !controller.doingPayment &&
+          controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada" &&
+          controller.loadingNewDelivery &&
+          controller.isMessageSent ?
+            Container(
+            height: Dimensions.screenHeight,
+            width: double.infinity,
+            color: Colors.white,
+            child: Center(
+              child: Container(
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                    SizedBox(height: Dimensions.height20,),
+                    Text("Pedido pagado y enviado correctamente, espere la confirmación de la tienda"),
+                    SizedBox(height: Dimensions.height20,),
+                    Text("Pago Aceptado",style: TextStyle(color: Colors.green),),
+                    SizedBox(height: Dimensions.height20,),
+                    Text("Referencia de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.refPayco.toString()}"),
+                    SizedBox(height: Dimensions.height20,),
+                    Text("Fecha de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.fecha}"),
+                    SizedBox(height: Dimensions.height20,),
+                    RawMaterialButton(
+                      onPressed: () {
+                        controller.cleanAfterSent();
+                        if(page.isNotEmpty){
+                          Navigator.pop(context);
+                        }
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      child: Icon(
+                        Icons.check,
+                        size: 35.0,
+                        color: Colors.green,
+                      ),
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ):
+        controller.pseTransactionConfirm.data != null &&
+          !controller.doingPayment &&
+          controller.pseTransactionConfirm.data!.estado == "Aceptada" &&
+          controller.loadingNewDelivery &&
+          controller.isMessageSent ?
+            Container(
           height: Dimensions.screenHeight,
           width: double.infinity,
           color: Colors.white,
@@ -264,9 +315,9 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: Dimensions.height20,),
                   Text("Pago Aceptado",style: TextStyle(color: Colors.green),),
                   SizedBox(height: Dimensions.height20,),
-                  Text("Referencia de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.refPayco.toString()}"),
+                  Text("Referencia de pago: ${controller.pseTransactionConfirm.data!.refPayco.toString()}"),
                   SizedBox(height: Dimensions.height20,),
-                  Text("Fecha de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.fecha}"),
+                  Text("Fecha de pago: ${controller.pseTransactionConfirm.data!.fecha}"),
                   SizedBox(height: Dimensions.height20,),
                   RawMaterialButton(
                     onPressed: () {
@@ -289,9 +340,13 @@ class CartScreen extends StatelessWidget {
               ),
             ),
           ),
-        ):
-        !controller.doingPayment && controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Rechazada" &&  !controller.loadingNewDelivery && controller.isMessageSent ?
-        Container(
+        ) :
+        controller.creditCardPaymentResponse.data != null &&
+          !controller.doingPayment &&
+          controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Rechazada" &&
+          !controller.loadingNewDelivery &&
+          controller.isMessageSent ?
+            Container(
           height: Dimensions.screenHeight,
           width: double.infinity,
           color: Colors.white,
@@ -307,7 +362,57 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: Dimensions.height20,),
                   Text("Referencia de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.refPayco.toString()}"),
                   SizedBox(height: Dimensions.height20,),
+                  Text("Mensaje entidad: ${controller.creditCardPaymentResponse.data!.transaction!.data!.respuesta}"),
+                  SizedBox(height: Dimensions.height20,),
                   Text("Fecha de pago: ${controller.creditCardPaymentResponse.data!.transaction!.data!.fecha}"),
+                  SizedBox(height: Dimensions.height20,),
+                  SizedBox(height: Dimensions.height20,),
+                  RawMaterialButton(
+                    onPressed: () {
+                      controller.cleanAfterSent();
+                      if(page.isNotEmpty){
+                        Navigator.pop(context);
+                      }
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.close,
+                      size: 35.0,
+                      color: Colors.red,
+                    ),
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ):
+        controller.pseTransactionConfirm.data != null &&
+          !controller.doingPayment &&
+          controller.pseTransactionConfirm.data!.estado == "Rechazada" &&
+          !controller.loadingNewDelivery &&
+          controller.isMessageSent ?
+            Container(
+          height: Dimensions.screenHeight,
+          width: double.infinity,
+          color: Colors.white,
+          child: Center(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Pago Rechazado, intente nuevamente",style: TextStyle(color: Colors.red),),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Referencia de pago: ${controller.pseTransactionConfirm.data!.refPayco.toString()}"),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Mensaje entidad: ${controller.pseTransactionConfirm.data!.respuesta}"),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Fecha de pago: ${controller.pseTransactionConfirm.data!.fecha}"),
                   SizedBox(height: Dimensions.height20,),
                   SizedBox(height: Dimensions.height20,),
                   RawMaterialButton(
@@ -335,7 +440,43 @@ class CartScreen extends StatelessWidget {
         Container(
           height: Dimensions.screenHeight,
           width: double.infinity,
-          color: Colors.green,
+          color: Colors.white,
+          child: Center(
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/himalaya_logo.png",height: Dimensions.screenHeight / 2,width: Dimensions.screenWidth,),
+                  SizedBox(height: Dimensions.height20,),
+                  Text("Error en la transacción, intente nuevamente",style: TextStyle(color: Colors.red),),
+                  SizedBox(height: Dimensions.height20,),
+                  Text(controller.pseErrorTransaction.textResponse!),
+                  SizedBox(height: Dimensions.height20,),
+                  Text(controller.pseErrorTransaction!.data!.error!.errores![0].errorMessage!),
+                  SizedBox(height: Dimensions.height20,),
+                  SizedBox(height: Dimensions.height20,),
+                  RawMaterialButton(
+                    onPressed: () {
+                      controller.cleanAfterSent();
+                      if(page.isNotEmpty){
+                        Navigator.pop(context);
+                      }
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    child: Icon(
+                      Icons.close,
+                      size: 35.0,
+                      color: Colors.red,
+                    ),
+                    padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  )
+                ],
+              ),
+            ),
+          ),
         );
       }),
       bottomNavigationBar: GetBuilder<CartController>(builder: (controller){

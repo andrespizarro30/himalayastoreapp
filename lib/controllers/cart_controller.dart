@@ -7,14 +7,19 @@ import 'package:himalayastoreapp/base/show_custom_message.dart';
 import 'package:himalayastoreapp/controllers/authentication_controller.dart';
 import 'package:himalayastoreapp/controllers/credit_card_page_controller.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
+import 'package:himalayastoreapp/models/payment_models/pse_error_response_model.dart';
+import 'package:himalayastoreapp/models/payment_models/pse_payment_response_model.dart';
+import 'package:himalayastoreapp/models/payment_models/pse_payment_transaction_confirm_model.dart';
 import 'package:himalayastoreapp/models/user_model.dart';
 import 'package:himalayastoreapp/utils/app_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../data/repositories/cart_repo.dart';
 import '../models/cart_model.dart';
 import '../models/deliveries_id_model.dart';
 import '../models/payment_models/credit_card_payment_response_model.dart';
 import '../models/payment_models/credit_card_payment_send_model.dart';
+import '../models/payment_models/pse_payment_send_model.dart';
 import '../models/products_list_model.dart';
 import '../utils/app_colors.dart';
 import 'products_page_controller.dart';
@@ -45,6 +50,18 @@ class CartController extends GetxController{
 
   CreditCardPaymentResponse _creditCardPaymentResponse = CreditCardPaymentResponse();
   CreditCardPaymentResponse get creditCardPaymentResponse => _creditCardPaymentResponse;
+
+  PSEPaymentResponse _psePaymentResponse = PSEPaymentResponse();
+  PSEPaymentResponse get psePaymentResponse => _psePaymentResponse;
+
+  PSETransactionConfirm _pseTransactionConfirm = PSETransactionConfirm();
+  PSETransactionConfirm get pseTransactionConfirm => _pseTransactionConfirm;
+
+  PSEErrorTransaction _pseErrorTransaction = PSEErrorTransaction();
+  PSEErrorTransaction get pseErrorTransaction => _pseErrorTransaction;
+
+  late Timer _timer;
+  Timer get timer => _timer;
 
   void addItem(ProductModel product, int quantity){
 
@@ -192,8 +209,8 @@ class CartController extends GetxController{
     update();
   }
 
-  void addToHistoryList(){
-    cartRepo.addToCartHistoryList();
+  void addToHistoryList(String payReference){
+    cartRepo.addToCartHistoryList(payReference);
     clear();
   }
 
@@ -248,58 +265,119 @@ class CartController extends GetxController{
 
   }
 
-  Future<void> getPaymentToken(CreditCardController creditCardController) async{
+  Future<String> getPaymentToken() async{
 
     _doingPayment = true;
     update();
 
-    String token = await cartRepo.getPaymentToken();
-
-    if(token.isNotEmpty){
-      if(Get.find<CreditCardController>().currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD){
-        //PAGO TARJETA DE CREDITO
-        CreditCardPaymentSend creditCardPaymentSend = CreditCardPaymentSend();
-        creditCardPaymentSend.value = "5000";
-        creditCardPaymentSend.docType = "CC";
-        creditCardPaymentSend.docNumber = "111111";
-        creditCardPaymentSend.name = creditCardController.currentSelectedPaymentMethod.cardHolderName;
-        creditCardPaymentSend.lastName = creditCardController.currentSelectedPaymentMethod.cardHolderLastName;
-        creditCardPaymentSend.email = Get.find<AuthenticationPageController>().signUpBody.email;
-        creditCardPaymentSend.cellPhone = Get.find<AuthenticationPageController>().signUpBody.phone;
-        creditCardPaymentSend.phone = "000000";
-        creditCardPaymentSend.cardNumber = creditCardController.currentSelectedPaymentMethod.cardNumber;
-        creditCardPaymentSend.cardExpYear = creditCardController.currentSelectedPaymentMethod.expYear;
-        creditCardPaymentSend.cardExpMonth = creditCardController.currentSelectedPaymentMethod.expMonth;
-        creditCardPaymentSend.cardCvc = creditCardController.currentSelectedPaymentMethod.cvv;
-        creditCardPaymentSend.dues = creditCardController.duesNumber.toString();
-
-        Response response = await cartRepo.creditCardPayment(creditCardPaymentSend);
-
-        _doingPayment = false;
-        update();
-
-        if(response.body["success"]){
-          _creditCardPaymentResponse = CreditCardPaymentResponse.fromJson(response.body);
-          if(creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada"){
-            await registerNewDelivery();
-            addToHistoryList();
-            showCustomSnackBar("Transacción Aceptada");
-          }else{
-            _isMessageSent = true;
-            showCustomSnackBar("Transacción rechazada, intente de nuevo");
-          }
-        }else{
-          _isMessageSent = true;
-          showCustomSnackBar("Transacción rechazada, intente de nuevo");
-        }
-      }else{
-        //PAGO PSE
-      }
-    }
+    return await cartRepo.getPaymentToken();
 
   }
 
-  Future<void> registerNewDelivery()async{
+  Future<void> creditCardPayment(CreditCardController creditCardController) async{
+
+    CreditCardPaymentSend creditCardPaymentSend = CreditCardPaymentSend();
+    creditCardPaymentSend.value = "5000";
+    creditCardPaymentSend.docType = "CC";
+    creditCardPaymentSend.docNumber = "111111";
+    creditCardPaymentSend.name = creditCardController.currentSelectedPaymentMethod.cardHolderName;
+    creditCardPaymentSend.lastName = creditCardController.currentSelectedPaymentMethod.cardHolderLastName;
+    creditCardPaymentSend.email = Get.find<AuthenticationPageController>().signUpBody.email;
+    creditCardPaymentSend.cellPhone = Get.find<AuthenticationPageController>().signUpBody.phone;
+    creditCardPaymentSend.phone = "000000";
+    creditCardPaymentSend.cardNumber = creditCardController.currentSelectedPaymentMethod.cardNumber;
+    creditCardPaymentSend.cardExpYear = creditCardController.currentSelectedPaymentMethod.expYear;
+    creditCardPaymentSend.cardExpMonth = creditCardController.currentSelectedPaymentMethod.expMonth;
+    creditCardPaymentSend.cardCvc = creditCardController.currentSelectedPaymentMethod.cvv;
+    creditCardPaymentSend.dues = creditCardController.duesNumber.toString();
+
+    Response response = await cartRepo.creditCardPayment(creditCardPaymentSend);
+
+    _doingPayment = false;
+    update();
+
+    if(response.body["success"]){
+      _creditCardPaymentResponse = CreditCardPaymentResponse.fromJson(response.body);
+      if(creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada"){
+        await registerNewDelivery(_pseTransactionConfirm.data!.refPayco!.toString());
+        addToHistoryList(_pseTransactionConfirm.data!.refPayco!.toString());
+        showCustomSnackBar("Transacción Aceptada");
+      }else{
+        _isMessageSent = true;
+        showCustomSnackBar("Transacción rechazada, intente de nuevo");
+        update();
+      }
+    }else{
+      _isMessageSent = true;
+      showCustomSnackBar("Transacción rechazada, intente de nuevo");
+      update();
+    }
+  }
+
+  Future<void> psePayment(PSEPaymentSend paymentSendData) async{
+
+    Response response = await cartRepo.psePayment(paymentSendData);
+
+    if(response.body["success"]){
+      _psePaymentResponse = PSEPaymentResponse.fromJson(response.body);
+      if(psePaymentResponse.data!.estado == "Pendiente"){
+
+        final Uri url = Uri.parse(psePaymentResponse.data!.urlbanco!);
+
+        bool transactionAccepted = false;
+
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+
+        _timer = Timer.periodic(Duration(milliseconds: 15000), (Timer t) async{
+
+          Response response = await cartRepo.pseTransactionConfirm(psePaymentResponse.data!.transactionID!);
+          if(response.body["success"]){
+            _pseTransactionConfirm = PSETransactionConfirm.fromJson(response.body);
+            if(_pseTransactionConfirm.data!.estado == "Aceptada" && !transactionAccepted){
+              transactionAccepted = true;
+              _doingPayment = false;
+              update();
+              await registerNewDelivery(_pseTransactionConfirm.data!.refPayco!.toString());
+              addToHistoryList(_pseTransactionConfirm.data!.refPayco!.toString());
+              showCustomSnackBar("Transacción Aceptada");
+              _timer.cancel();
+            }else
+            if(_pseTransactionConfirm.data!.estado == "Rechazada"){
+              _isMessageSent = true;
+              _doingPayment = false;
+              showCustomSnackBar("Transacción rechazada, intente de nuevo");
+              _timer.cancel();
+              update();
+            }else{
+              print(_pseTransactionConfirm.data!.estado);
+            }
+          }else{
+            _isMessageSent = true;
+            _doingPayment = false;
+            showCustomSnackBar("Transacción rechazada, intente de nuevo");
+            _timer.cancel();
+            update();
+          }
+
+        });
+
+
+      }else{
+        _isMessageSent = true;
+        _doingPayment = false;
+        showCustomSnackBar("Transacción rechazada, intente de nuevo");
+        update();
+      }
+    }else{
+      _pseErrorTransaction = PSEErrorTransaction.fromJson(response.body);
+      _isMessageSent = true;
+      _doingPayment = false;
+      showCustomSnackBar("Transacción rechazada, intente de nuevo");
+      update();
+    }
+  }
+
+  Future<void> registerNewDelivery(String payReference)async{
 
     _loadingNewDelivery = true;
     update();
@@ -310,7 +388,7 @@ class CartController extends GetxController{
 
     var time = DateTime.parse(storageItems[0].time!);
 
-    await cartRepo.registerNewDeliveryId(time.millisecondsSinceEpoch.toString());
+    await cartRepo.registerNewDeliveryId(time.millisecondsSinceEpoch.toString(),payReference);
 
     storageItems.forEach((cartModel) async {
       await cartRepo.registerNewDeliveryIdDetail(time.millisecondsSinceEpoch.toString(),cartModel);
@@ -326,6 +404,7 @@ class CartController extends GetxController{
 
   void cleanAfterSent(){
     _creditCardPaymentResponse = CreditCardPaymentResponse();
+    _psePaymentResponse = PSEPaymentResponse();
     _isMessageSent=false;
     _doingPayment=false;
     _loadingNewDelivery = false;

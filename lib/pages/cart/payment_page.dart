@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/base/show_custom_message.dart';
 import 'package:himalayastoreapp/controllers/cart_controller.dart';
+import 'package:himalayastoreapp/pages/cart_payments/pse_payment_form.dart';
 import 'package:himalayastoreapp/utils/app_constants.dart';
 import 'package:himalayastoreapp/widgets/app_icon.dart';
 import 'package:himalayastoreapp/widgets/small_text.dart';
 
 import '../../controllers/credit_card_page_controller.dart';
 import '../../controllers/main_page_controller.dart';
+import '../../models/payment_models/pse_payment_send_model.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
 import '../../widgets/big_text.dart';
@@ -261,7 +264,24 @@ class PaymentScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () async{
                     Navigator.pop(context);
-                    await Get.find<CartController>().getPaymentToken(controller);
+                    String token = await Get.find<CartController>().getPaymentToken();
+
+                    if(token.isNotEmpty){
+                      if(Get.find<CreditCardController>().currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD){
+                        //PAGO TARJETA DE CREDITO
+                        Get.find<CartController>().creditCardPayment(controller);
+                      }else{
+                        //PAGO PSE
+                        var paymentSendData = await Get.to(() => PSEPaymentFormScreen(token: token,),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
+                        if((paymentSendData as PSEPaymentSend).bank!.isNotEmpty && (paymentSendData as PSEPaymentSend).name!.isNotEmpty){
+                          Get.find<CartController>().psePayment(paymentSendData as PSEPaymentSend);
+                        }else{
+                          showCustomSnackBar("Diligencie completamente el formulario de pago");
+                          Get.find<CartController>().cleanAfterSent();
+                        }
+                      }
+                    }
+
                     //await Get.find<CartController>().registerNewDelivery();
                     //Get.find<CartController>().addToHistoryList();
                   },

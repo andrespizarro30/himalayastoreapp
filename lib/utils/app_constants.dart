@@ -45,5 +45,7 @@ class AppConstants{
   static const String PAYMENT_LOGIN = "/login";
   static const String CREDIT_CARD_PAYMENT = "/payment/process";
   static const String PSE_PAYMENT = "/payment/process/pse";
+  static const String BANK_LIST = "/payment/pse/banks";
+  static const String TRANSACTION_CONFIRM = "/payment/pse/transaction";
 
 }
