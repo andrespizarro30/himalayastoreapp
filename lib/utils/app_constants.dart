@@ -19,6 +19,7 @@ class AppConstants{
   static const String REGISTER_NEW_DELIVERY_ID_DETAIL = '/api/registerNewDeliveryDetail/post';
   static const String REGISTER_PRODUCT_RATING = '/api/registerproductrating/post';
   static const String RATING_PRODUCTS_LIST = '/api/productrating/get';
+  static const String UPDATE_PHONE_NUMBER = '/api/updatephonenumber/put';
 
   static const String FIREBASE_MESSAGING_AUTH_TOKEN = "AAAAh5w2eLs:APA91bGm5wCm_hD9DyRiy-1D-OAn5pThJzDGEuN7VxNAHO74QBCEoWgvxJJfAaIcRhECKZkqMKfrbqw0hK-lOHqSw3_WWtnL98mHTmc13g0-tdqXhZ0Wk1HqEDvQLRJOO67Zv6Sk8czO";
 

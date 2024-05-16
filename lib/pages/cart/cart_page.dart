@@ -510,14 +510,19 @@ class CartScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () async{
                     if(Get.find<AuthenticationPageController>().firebaseAuth.currentUser != null){
-                      if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
-                          Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
+                      if(Get.find<AuthenticationPageController>().signUpBody!.phone!.isNotEmpty){
+                        if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
+                            Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
 
-                        Get.to(() => PaymentScreen(),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
+                          Get.to(() => PaymentScreen(),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
 
+                        }else{
+                          showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
+                        }
                       }else{
-                        showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
+                        showCustomSnackBar("Actualice número telefónico",backgroundColor: AppColors.himalayaGrey);
                       }
+
                     }else{
                       Get.toNamed(RouteHelper.signIn);
                     }

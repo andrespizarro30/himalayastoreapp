@@ -12,7 +12,20 @@
           "package_name": "com.afsoftwaresolutions.com.himalayastoreapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "582441400507-rpkbq0b50ql48623kdfbhv415g8d81nj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afsoftwaresolutions.com.himalayastoreapp",
+            "certificate_hash": "9b073245d43526926bc7d31e6cfdea24a4ac73cb"
+          }
+        },
+        {
+          "client_id": "582441400507-h1sj48hqlese2nf4cna5kt6ntpb4s4tl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCbyWEjLlPpAWevQBI1LIdGKoAd-U6qFvc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582441400507-h1sj48hqlese2nf4cna5kt6ntpb4s4tl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "582441400507-iu8j4e2o1u700tjrstdiqtn5kj0itkma.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.afsoftwaresolutions.com.himalayastoreapp"
+              }
+            }
+          ]
         }
       }
     }

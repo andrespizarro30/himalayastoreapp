@@ -1,7 +1,9 @@
-import 'dart:io';
+import 'dart:io' as io;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/widgets/app_text_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -70,11 +72,11 @@ class AccountScreen extends StatelessWidget {
                           bottom: Dimensions.height10,
                           child: GestureDetector(
                             onTap: () async{
-                              var permissionStatus = Platform.isAndroid ? await requestStoragePermissionIOS() : await requestStoragePermissionIOS();
+                              var permissionStatus = io.Platform.isAndroid ? await requestStoragePermissionIOS() : await requestStoragePermissionIOS();
                               if(permissionStatus.isGranted){
                                 controller.openImageRequestContainer();
                               }else
-                              if(Platform.isIOS){
+                              if(io.Platform.isIOS){
                                 controller.openImageRequestContainer();
                               }
                               else{
@@ -110,15 +112,23 @@ class AccountScreen extends StatelessWidget {
                             ),
                             SizedBox(height: Dimensions.height20,),
                             //PHONE
-                            AccountWidget(
-                                applIcon: ApplIcon(
-                                  icon: Icons.phone,
-                                  backgroundColor: AppColors.iconColor1,
-                                  iconColor: Colors.white,
-                                  iconSize: Dimensions.iconSize24,
-                                  size: Dimensions.height10 * 5,
-                                ),
-                                bigText: BigText(text: controller.signUpBody.phone!,)
+                            GestureDetector(
+                              onTap: (){
+                                openUpdateDialogBox(context,controller);
+                              },
+                              child: AccountWidget(
+                                  applIcon: ApplIcon(
+                                    icon: Icons.phone,
+                                    backgroundColor: AppColors.iconColor1,
+                                    iconColor: Colors.white,
+                                    iconSize: Dimensions.iconSize24,
+                                    size: Dimensions.height10 * 5,
+                                    text: controller.signUpBody.phone!,
+                                  ),
+                                  bigText: BigText(text: controller.signUpBody.phone!.isNotEmpty ? controller.signUpBody.phone! : "Actualice # Célular",
+                                    color: controller.signUpBody.phone!.isNotEmpty ? Colors.black : Colors.redAccent,
+                                  )
+                              ),
                             ),
                             SizedBox(height: Dimensions.height20,),
                             //E-MAIL
@@ -345,23 +355,114 @@ class AccountScreen extends StatelessWidget {
     String dir = path.dirname(returnedImage.path);
     String newFilename = "My_Profile_Image.jpg";
     String newPathName = path.join(dir,"${newFilename}");
-    File imageFile = File(returnedImage.path).renameSync(newPathName);
+    io.File imageFile = io.File(returnedImage.path).renameSync(newPathName);
 
 
-    var appDirectory = Platform.isAndroid ? await getDownloadsDirectory() : await getApplicationDocumentsDirectory();
+    var appDirectory = io.Platform.isAndroid ? await getDownloadsDirectory() : await getApplicationDocumentsDirectory();
 
-    Directory folderDir = Directory("${appDirectory!.path}/MyPhotoProfile");
+    io.Directory folderDir = io.Directory("${appDirectory!.path}/MyPhotoProfile");
 
     if(await folderDir.exists() == false){
       await folderDir.create(recursive: true);
     }
 
-    File newImageFile = await imageFile.copy("${folderDir.path}/${newFilename}");
+    io.File newImageFile = await imageFile.copy("${folderDir.path}/${newFilename}");
 
     controller.updatePhotoProfile(appDirectory.path,newImageFile);
 
     controller.openImageRequestContainer();
 
+  }
+
+  Future<void> openUpdateDialogBox(BuildContext context, AuthenticationPageController controller) async{
+
+    var response = await showDialog(
+        context: context,
+        builder: (BuildContext c) => updateDialog(controller,c));
+
+  }
+
+  Widget updateDialog(AuthenticationPageController controller,BuildContext context){
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14)
+      ),
+      backgroundColor: AppColors.himalayaBlue,
+      child: Container(
+        height: Dimensions.screenHeight/3,
+        width: Dimensions.screenWidth,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 20,),
+            Text(
+              "Actualizar # Celular",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 16
+              ),
+            ),
+            const SizedBox(height: 20,),
+            Divider(
+              thickness: 3,
+              color: AppColors.himalayaBlue,
+            ),
+
+            const SizedBox(height: 10,),
+
+            AppTextField(
+              textEditingController: controller.tecUpdatePhoneNumber,
+              textHint: "Ingresa # celular",
+              icon: Icons.phone,
+              textInputType: TextInputType.number,
+            ),
+
+            SizedBox(height: Dimensions.height30,),
+
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.height10,right: Dimensions.height10,bottom: 0),
+              child: ElevatedButton(
+                onPressed: () async{
+                  var resp = await controller.updatePhoneNumber();
+                  if(resp){
+                    Navigator.pop(context);
+                  }else{
+
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Actualizar",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 20
+                      ),
+                    ),
+                    Icon(
+                      Icons.update,
+                      color: Colors.white,
+                      size: 26,
+                    )
+                  ],
+                ),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.himalayaBlue
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
 }

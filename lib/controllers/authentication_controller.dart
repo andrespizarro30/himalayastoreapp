@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/models/response_model.dart';
 
+import '../base/convert_url_to_file.dart';
 import '../base/show_custom_message.dart';
 import '../data/repositories/authentication_repository.dart';
 import '../models/sign_up_model.dart';
@@ -51,6 +52,8 @@ class AuthenticationPageController extends GetxController implements GetxService
   bool _isOpenImageRequestContainer = false;
   bool get isOpenImageRequestContainer => _isOpenImageRequestContainer;
 
+  TextEditingController tecUpdatePhoneNumber = TextEditingController();
+
   Future<void> registration(SignUpBody signUpBody) async{
     _isLoading = true;
     update();
@@ -82,7 +85,7 @@ class AuthenticationPageController extends GetxController implements GetxService
         responseModel = ResponseModel(false, "Error");
       }
       _isLoading = false;
-      getProfileData();
+      getProfileData("EmailPassword");
 
     }catch(e){
       responseModel = ResponseModel(false, "Error");
@@ -96,22 +99,129 @@ class AuthenticationPageController extends GetxController implements GetxService
 
   }
 
-  Future<void> getProfileData() async{
+  Future<ResponseModel> signInWithFacebook()async{
+
+    _isLoading = true;
+    late ResponseModel responseModel;
+    update();
+    try{
+      UserCredential userCredential = await authRepo.signInWithFacebook();
+      if(userCredential != null){
+        _uid = userCredential.user!.uid!;
+        _profileImageURL = userCredential.additionalUserInfo!.profile!["picture"]["data"]["url"];
+        File photoFile = await converURLImageToFile(_profileImageURL!);
+        updatePhotoProfile("", photoFile);
+        responseModel = ResponseModel(true, "Sign in correct");
+      }else{
+        responseModel = ResponseModel(false, "Error");
+      }
+      _isLoading = false;
+      getProfileData("Facebook");
+
+    }catch(e){
+      responseModel = ResponseModel(false, "Error");
+      showCustomSnackBar("Usuario y/o contrasena erroneos, intente nuevamente...",title: "Login usuario");
+      _uid = "";
+      _isLoading = false;
+      update();
+    }
+
+    return responseModel;
+  }
+
+  Future<ResponseModel> signInWithGoogle() async{
+
+    _isLoading = true;
+    late ResponseModel responseModel;
+    update();
+    try{
+      UserCredential userCredential = await authRepo.signInWithGoogle();
+      if(userCredential != null){
+        _uid = userCredential.user!.uid!;
+        _profileImageURL = firebaseAuth.currentUser!.photoURL!;
+        File photoFile = await converURLImageToFile(_profileImageURL!);
+        updatePhotoProfile("", photoFile);
+        responseModel = ResponseModel(true, "Sign in correct");
+      }else{
+        responseModel = ResponseModel(false, "Error");
+      }
+      _isLoading = false;
+      getProfileData("Google");
+
+    }catch(e){
+      responseModel = ResponseModel(false, "Error");
+      showCustomSnackBar("Usuario y/o contrasena erroneos, intente nuevamente...",title: "Login usuario");
+      _uid = "";
+      _isLoading = false;
+      update();
+    }
+
+    return responseModel;
+
+  }
+
+  Future<void> getProfileData(String loginMode) async{
 
     var firebaseAuth = await authRepo.getProfileData();
 
     if(firebaseAuth.currentUser != null){
 
-      var dataList = firebaseAuth.currentUser!.displayName!.split(";");
+      if(loginMode == "EmailPassword"){
+        var dataList = firebaseAuth.currentUser!.displayName!.split(";");
 
-      _signUpBody.name = dataList[0];
-      _signUpBody.phone = dataList[1];
-      _signUpBody.userType = dataList[2];
-      _signUpBody.email = firebaseAuth.currentUser!.email;
+        _signUpBody.name = dataList[0];
+        _signUpBody.phone = dataList[1];
+        _signUpBody.userType = dataList[2];
+        _signUpBody.email = firebaseAuth.currentUser!.email;
 
-      _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
+        if(_profileImageURL.isEmpty || _profileImageURL == ""){
+          _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
+        }
+      }else
+      if(loginMode == "Google"){
+
+        _signUpBody.name = firebaseAuth.currentUser!.displayName!;
+        _signUpBody.phone = firebaseAuth.currentUser!.phoneNumber != null ? firebaseAuth.currentUser!.phoneNumber : "";
+        _signUpBody.userType = "Usuario";
+        _signUpBody.email = firebaseAuth.currentUser!.email;
+
+        firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
+
+        _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
+      }
+
+      else
+      if(loginMode == "Facebook"){
+
+        _signUpBody.name = firebaseAuth.currentUser!.displayName!;
+        _signUpBody.phone = firebaseAuth.currentUser!.phoneNumber != null ? firebaseAuth.currentUser!.phoneNumber : "";
+        _signUpBody.userType = "Usuario";
+        _signUpBody.email = firebaseAuth.currentUser!.email;
+
+        firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
+
+      }
+
 
       update();
+    }
+
+  }
+
+  Future<bool> updatePhoneNumber() async{
+
+    var firebaseAuth = await authRepo.getProfileData();
+
+    await firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${tecUpdatePhoneNumber.text};${signUpBody.userType}");
+
+    Response response = await authRepo.updatePhoneNumber(tecUpdatePhoneNumber.text);
+
+    await getProfileData("EmailPassword");
+
+    if(response.body["PhoneUpdated"]=="OK"){
+      return true;
+    }else{
+      return false;
     }
 
   }

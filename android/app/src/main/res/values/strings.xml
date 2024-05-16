@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="app_name">Himalaya Fitness Store</string>
+    <string name="facebook_app_id">1507349563539133</string>
+    <string name="fb_login_protocol_scheme">fb1507349563539133</string>
+    <string name="facebook_client_token">e12a3859daac6740bf87dfba1b1be3ca</string>
+</resources>

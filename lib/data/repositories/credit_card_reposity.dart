@@ -119,6 +119,20 @@ class CreditCardRepository{
         });
       }
 
+    }else{
+      if(paymentMethod==AppConstants.PSE_PAYMENT_METHOD){
+        sharedPreferences.remove(AppConstants.CURRENT_SELECTED_PAYMENT);
+        CardInfo cardInfo = CardInfo();
+        cardInfo.cardNumber = AppConstants.PSE_PAYMENT_METHOD;
+        sharedPreferences.setString(AppConstants.CURRENT_SELECTED_PAYMENT, json.encode(cardInfo.toJson()));
+      }else{
+        cardInfoList.forEach((dataCard) {
+          if(dataCard.cardNumber == paymentMethod){
+            sharedPreferences.remove(AppConstants.CURRENT_SELECTED_PAYMENT);
+            sharedPreferences.setString(AppConstants.CURRENT_SELECTED_PAYMENT, json.encode(dataCard.toJson()));
+          }
+        });
+      }
     }
 
   }
@@ -130,6 +144,10 @@ class CreditCardRepository{
     if(sharedPreferences.containsKey(AppConstants.CURRENT_SELECTED_PAYMENT)){
       String cardInfoString = sharedPreferences.getString(AppConstants.CURRENT_SELECTED_PAYMENT)!;
       cardInfo = CardInfo.fromJson(json.decode(cardInfoString));
+    }else{
+      CardInfo cardInfo = CardInfo();
+      cardInfo.cardNumber = AppConstants.PSE_PAYMENT_METHOD;
+      sharedPreferences.setString(AppConstants.CURRENT_SELECTED_PAYMENT, json.encode(cardInfo.toJson()));
     }
 
     return cardInfo;

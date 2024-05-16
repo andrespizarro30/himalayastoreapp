@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../base/show_custom_message.dart';
 import '../../controllers/authentication_controller.dart';
 import '../../models/sign_up_model.dart';
+import '../../routes/route_helper.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/dimensions.dart';
 import '../../widgets/app_text_field.dart';
@@ -189,9 +190,31 @@ class SignUpScreen extends StatelessWidget {
                   alignment: WrapAlignment.spaceBetween,
                   children: List.generate(signUpImages.length, (index) => Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: Dimensions.radius20,
-                      backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                    child: GestureDetector(
+                      onTap: (){
+                        if(signUpImages[index] == "g.png"){
+                          controller.signInWithGoogle().then((status){
+                            if(status.isSuccess){
+                              Get.toNamed(RouteHelper.getHome());
+                            }else{
+                              showCustomSnackBar(status.message);
+                            }
+                          });
+                        }else
+                        if(signUpImages[index] == "f.png"){
+                          controller.signInWithFacebook().then((status){
+                            if(status.isSuccess){
+                              Get.toNamed(RouteHelper.getHome());
+                            }else{
+                              showCustomSnackBar(status.message);
+                            }
+                          });
+                        }
+                      },
+                      child: CircleAvatar(
+                        radius: Dimensions.radius20,
+                        backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                      ),
                     ),
                   ))
               )

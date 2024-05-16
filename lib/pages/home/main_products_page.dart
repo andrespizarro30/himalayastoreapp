@@ -31,7 +31,6 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
 
     SchedulerBinding.instance.addPostFrameCallback((_) async{
       _loadResources();
-      requestLocationPermissions();
     });
 
     return Scaffold(
@@ -60,6 +59,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                                 onTap: (){
                                   mainPageController.getSavedAddress();
                                   mainPageController.openAdressRequestContainer();
+                                  requestLocationPermissions();
                                 },
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -90,10 +90,18 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                                 child: Container(
                                   width: Dimensions.width45,
                                   height: Dimensions.height45,
-                                  child: Icon(Icons.search,color: Colors.white,size: Dimensions.iconSize24,),
+                                  child: Get.find<AuthenticationPageController>().currentFBUserExists ?
+                                  CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 80,
+                                    backgroundImage: NetworkImage(
+                                      Get.find<AuthenticationPageController>().profileImageURL,
+                                    ),
+                                  ):
+                                  Icon(Icons.person,color: AppColors.himalayaGrey,size: Dimensions.iconSize24,),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(Dimensions.radius15),
-                                      color: AppColors.himalayaBlue
+                                      color: AppColors.himalayaWhite
                                   ),
                                 ),
                               )
@@ -324,7 +332,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
     await Get.find<CartController>().getCartData();
     Get.find<CartController>().refreshOne();
     await Get.find<AuthenticationPageController>().verifyCurrentUser();
-    await Get.find<AuthenticationPageController>().getProfileData();
+    await Get.find<AuthenticationPageController>().getProfileData("EmailPassword");
     Get.find<MainPageController>().getCurrentAddress();
   }
 
