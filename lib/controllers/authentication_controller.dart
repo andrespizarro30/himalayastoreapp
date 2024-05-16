@@ -170,8 +170,8 @@ class AuthenticationPageController extends GetxController implements GetxService
         var dataList = firebaseAuth.currentUser!.displayName!.split(";");
 
         _signUpBody.name = dataList[0];
-        _signUpBody.phone = dataList[1];
-        _signUpBody.userType = dataList[2];
+        _signUpBody.phone = dataList.length>1 ? dataList[1] : "";
+        _signUpBody.userType = dataList.length>1 ? dataList[2] : "";
         _signUpBody.email = firebaseAuth.currentUser!.email;
 
         if(_profileImageURL.isEmpty || _profileImageURL == ""){
@@ -185,7 +185,7 @@ class AuthenticationPageController extends GetxController implements GetxService
         _signUpBody.userType = "Usuario";
         _signUpBody.email = firebaseAuth.currentUser!.email;
 
-        firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
+        await firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
 
         _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
       }
@@ -198,7 +198,7 @@ class AuthenticationPageController extends GetxController implements GetxService
         _signUpBody.userType = "Usuario";
         _signUpBody.email = firebaseAuth.currentUser!.email;
 
-        firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
+        await firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
 
       }
 

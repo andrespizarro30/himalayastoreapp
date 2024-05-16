@@ -63,5 +63,30 @@
 	<string>La app requiere acceso al uso de su cámara</string>
 	<key>NSDocumentsFolderUsageDescription</key>
 	<string>La app requiere acceder al uso de carpetas</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.582441400507-iu8j4e2o1u700tjrstdiqtn5kj0itkma</string>
+				<string>fb1507349563539133</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>1507349563539133</string>
+	<key>FacebookClientToken</key>
+	<string>e12a3859daac6740bf87dfba1b1be3ca</string>
+	<key>FacebookDisplayName</key>
+	<string>Himalaya Fitness Store</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>fbapi</string>
+      <string>fb-messenger-api</string>
+      <string>fbauth2</string>
+      <string>fbshareextension</string>
+    </array>
 </dict>
 </plist>
