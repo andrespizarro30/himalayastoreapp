@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../models/sign_up_model.dart';
 import '../../models/user_model.dart';
@@ -68,6 +69,7 @@ class AuthenticationRepo{
   Future<UserCredential> signInWithFacebook()async{
 
     Map<String,dynamic> userData = {};
+
     var accessToken = await FacebookAuth.instance.accessToken;
 
     if(accessToken != null){
@@ -85,6 +87,7 @@ class AuthenticationRepo{
     }
 
     final credential = FacebookAuthProvider.credential(accessToken!.token);
+
     var userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
     SignUpBody signUpBody = SignUpBody();
@@ -144,6 +147,35 @@ class AuthenticationRepo{
 
   void googleLogOut() async{
     await GoogleSignIn().signOut();
+  }
+
+  Future<UserCredential> signInWithApple()async{
+
+    Map<String,dynamic> userData = {};
+
+    final appleProvider = AppleAuthProvider();
+    appleProvider.addScope('email');
+    appleProvider.addScope('name');
+
+    var userCredential = await FirebaseAuth.instance.signInWithProvider(appleProvider);
+
+    SignUpBody signUpBody = SignUpBody();
+
+    String name = userCredential.user!.displayName!;
+    if(name.contains(";")){
+      List<String> dataList = name.split(";");
+      name = dataList[0];
+    }
+
+    signUpBody.name = name;
+    signUpBody.phone = userCredential.user!.phoneNumber != null ? userCredential.user!.phoneNumber : "";
+    signUpBody.userType = "Usuario";
+    signUpBody.email = userCredential.user!.email;
+
+    await registerNewUser(signUpBody,userCredential);
+
+    return userCredential;
+
   }
 
   Future<FirebaseAuth> getProfileData() async{

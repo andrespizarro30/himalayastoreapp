@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,7 +29,8 @@ class SignUpScreen extends StatelessWidget {
 
     var signUpImages = [
       "f.png",
-      "g.png"
+      "g.png",
+      "a.png"
     ];
 
     void _registration(AuthenticationPageController authController){
@@ -190,30 +193,42 @@ class SignUpScreen extends StatelessWidget {
                   alignment: WrapAlignment.spaceBetween,
                   children: List.generate(signUpImages.length, (index) => Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: (){
-                        if(signUpImages[index] == "g.png"){
-                          controller.signInWithGoogle().then((status){
-                            if(status.isSuccess){
-                              Get.toNamed(RouteHelper.getHome());
-                            }else{
-                              showCustomSnackBar(status.message);
-                            }
-                          });
-                        }else
-                        if(signUpImages[index] == "f.png"){
-                          controller.signInWithFacebook().then((status){
-                            if(status.isSuccess){
-                              Get.toNamed(RouteHelper.getHome());
-                            }else{
-                              showCustomSnackBar(status.message);
-                            }
-                          });
-                        }
-                      },
-                      child: CircleAvatar(
-                        radius: Dimensions.radius20,
-                        backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                    child: Visibility(
+                      visible: Platform.isAndroid && signUpImages[index] == "a.png" ? false : true,
+                      child: GestureDetector(
+                        onTap: (){
+                          if(signUpImages[index] == "g.png"){
+                            controller.signInWithGoogle().then((status){
+                              if(status.isSuccess){
+                                Get.toNamed(RouteHelper.getHome());
+                              }else{
+                                showCustomSnackBar(status.message);
+                              }
+                            });
+                          }else
+                          if(signUpImages[index] == "f.png"){
+                            controller.signInWithFacebook().then((status){
+                              if(status.isSuccess){
+                                Get.toNamed(RouteHelper.getHome());
+                              }else{
+                                showCustomSnackBar(status.message);
+                              }
+                            });
+                          }else
+                          if(signUpImages[index] == "a.png"){
+                            controller.signInWithApple().then((status){
+                              if(status.isSuccess){
+                                Get.toNamed(RouteHelper.getHome());
+                              }else{
+                                showCustomSnackBar(status.message);
+                              }
+                            });
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: Dimensions.radius20,
+                          backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                        ),
                       ),
                     ),
                   ))

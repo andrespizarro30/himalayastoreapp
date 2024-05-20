@@ -160,6 +160,33 @@ class AuthenticationPageController extends GetxController implements GetxService
 
   }
 
+  Future<ResponseModel> signInWithApple()async{
+
+    _isLoading = true;
+    late ResponseModel responseModel;
+    update();
+    try{
+      UserCredential userCredential = await authRepo.signInWithApple();
+      if(userCredential != null){
+        _uid = userCredential.user!.uid!;
+        responseModel = ResponseModel(true, "Sign in correct");
+      }else{
+        responseModel = ResponseModel(false, "Error");
+      }
+      _isLoading = false;
+      getProfileData("Apple");
+
+    }catch(e){
+      responseModel = ResponseModel(false, "Error");
+      showCustomSnackBar("Usuario y/o contrasena erroneos, intente nuevamente...",title: "Login usuario");
+      _uid = "";
+      _isLoading = false;
+      update();
+    }
+
+    return responseModel;
+  }
+
   Future<void> getProfileData(String loginMode) async{
 
     var firebaseAuth = await authRepo.getProfileData();
@@ -189,9 +216,19 @@ class AuthenticationPageController extends GetxController implements GetxService
 
         _profileImageURL = firebaseAuth.currentUser!.photoURL != null ? firebaseAuth.currentUser!.photoURL! : "";
       }
-
       else
       if(loginMode == "Facebook"){
+
+        _signUpBody.name = firebaseAuth.currentUser!.displayName!;
+        _signUpBody.phone = firebaseAuth.currentUser!.phoneNumber != null ? firebaseAuth.currentUser!.phoneNumber : "";
+        _signUpBody.userType = "Usuario";
+        _signUpBody.email = firebaseAuth.currentUser!.email;
+
+        await firebaseAuth.currentUser!.updateDisplayName("${signUpBody.name};${signUpBody.phone};${signUpBody.userType}");
+
+      }
+      else
+      if(loginMode == "Apple"){
 
         _signUpBody.name = firebaseAuth.currentUser!.displayName!;
         _signUpBody.phone = firebaseAuth.currentUser!.phoneNumber != null ? firebaseAuth.currentUser!.phoneNumber : "";
