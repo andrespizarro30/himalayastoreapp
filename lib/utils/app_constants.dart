@@ -10,6 +10,9 @@ class AppConstants{
   static const String PRODUCTS_LIST_BY_CATEGORY = "/api/productslistbycategory/get";
   static const String PRODUCTS_CATEGORIES_LIST = "/api/productscategories/get";
   static const String DELIVERY_RECEIVER_DATA = "/api/mainuser/get";
+  static const String USER_DATA = "/api/userinfo/get";
+  static const String USER_PROMO_CODE_DATA = "/api/userpromocode/get";
+  static const String DELETE_PROMO_CODE_DATA = "/api/promocodeused/put";
   static const String REGISTER_NEW_USER = "/api/registerNewUser/post";
   static const String DELIVERY_BY_UID_AND_ID = "/api/deliveryByUIDandId/get";
   static const String DELIVERIES_LIST = '/api/deliveriesList/get';

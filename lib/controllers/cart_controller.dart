@@ -274,10 +274,10 @@ class CartController extends GetxController{
 
   }
 
-  Future<void> creditCardPayment(CreditCardController creditCardController) async{
+  Future<void> creditCardPayment(CreditCardController creditCardController,String totalCost) async{
 
     CreditCardPaymentSend creditCardPaymentSend = CreditCardPaymentSend();
-    creditCardPaymentSend.value = "5000";
+    creditCardPaymentSend.value = "5000";//CAMBIAR AQUI POR totalCost
     creditCardPaymentSend.docType = "CC";
     creditCardPaymentSend.docNumber = "111111";
     creditCardPaymentSend.name = creditCardController.currentSelectedPaymentMethod.cardHolderName;
@@ -301,6 +301,7 @@ class CartController extends GetxController{
       if(creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada"){
         await registerNewDelivery(_pseTransactionConfirm.data!.refPayco!.toString());
         addToHistoryList(_pseTransactionConfirm.data!.refPayco!.toString());
+        Get.find<CreditCardController>().deletePromoCodeUsed();
         showCustomSnackBar("Transacción Aceptada");
       }else{
         _isMessageSent = true;
@@ -341,6 +342,7 @@ class CartController extends GetxController{
               addToHistoryList(_pseTransactionConfirm.data!.refPayco!.toString());
               showCustomSnackBar("Transacción Aceptada");
               _timer.cancel();
+              Get.find<CreditCardController>().deletePromoCodeUsed();
             }else
             if(_pseTransactionConfirm.data!.estado == "Rechazada"){
               _isMessageSent = true;

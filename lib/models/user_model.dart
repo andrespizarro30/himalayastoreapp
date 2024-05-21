@@ -34,6 +34,9 @@ class UsersModel {
   String? userEmail;
   String? userUID;
   String? userToken;
+  String? promoCode;
+  String? promoCodeDueDate;
+  String? promoCodeDueText;
 
   UsersModel(
       {this.id = 0,
@@ -42,7 +45,11 @@ class UsersModel {
         this.userUserType = "",
         this.userEmail = "",
         this.userUID = "",
-        this.userToken = ""});
+        this.userToken = "",
+        this.promoCode = "",
+        this.promoCodeDueDate = "",
+        this.promoCodeDueText = "",
+      });
 
   UsersModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -52,6 +59,9 @@ class UsersModel {
     userEmail = json['UserEmail'];
     userUID = json['UserUID'];
     userToken = json['UserToken'];
+    promoCode = json['PromoCode'];
+    promoCodeDueDate = json['PromoCodeDueDate'];
+    promoCodeDueText = json['PromoCodeDueText'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +73,9 @@ class UsersModel {
     data['UserEmail'] = this.userEmail;
     data['UserUID'] = this.userUID;
     data['UserToken'] = this.userToken;
+    data['PromoCode'] = this.promoCode;
+    data['PromoCodeDueDate'] = this.promoCodeDueDate;
+    data['PromoCodeDueText'] = this.promoCodeDueText;
     return data;
   }
 }

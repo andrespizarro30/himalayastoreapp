@@ -99,7 +99,7 @@ class PSEPaymentFormController extends GetxController{
 
     PSEPaymentSend psePaymentSend = PSEPaymentSend();
     psePaymentSend.bank = _currentSelectedBank.bankCode;
-    psePaymentSend.value = "5000";
+    psePaymentSend.value = "0";
     psePaymentSend.docType = _docType;
     psePaymentSend.docNumber = tecDocNumber.text;
     psePaymentSend.name = tecName.text;

@@ -62,7 +62,7 @@ Future<void> init() async{
   Get.lazyPut(() => GoogleMapRepo(googleMapsApiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => PendingDeliveriesRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
   Get.lazyPut(() => ProductRatingRepo(sharedPreferences: Get.find(), apiClient: Get.find(), firebaseAuth: Get.find()));
-  Get.lazyPut(() => CreditCardRepository(sharedPreferences: Get.find()));
+  Get.lazyPut(() => CreditCardRepository(sharedPreferences: Get.find(),apiClient: Get.find(),firebaseAuth: Get.find()));
   Get.lazyPut(() => PSEPaymentFormRepo(paymentApi: Get.find()));
 
 

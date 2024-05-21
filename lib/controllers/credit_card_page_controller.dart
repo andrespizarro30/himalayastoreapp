@@ -5,7 +5,9 @@ import 'package:himalayastoreapp/models/card_info_model.dart';
 
 import '../base/show_custom_message.dart';
 import '../data/repositories/credit_card_reposity.dart';
+import '../models/user_model.dart';
 import '../utils/dimensions.dart';
+import 'cart_controller.dart';
 
 class CreditCardController extends GetxController{
 
@@ -42,11 +44,45 @@ class CreditCardController extends GetxController{
   int _duesNumber = 1;
   int get duesNumber => _duesNumber;
 
+  bool _isOpenCouponSelectContainer = false;
+  bool get isOpenCouponSelectContainer => _isOpenCouponSelectContainer;
+
+  double _couponSelectContainerHeight = 0;
+  double get couponSelectContainerHeight => _couponSelectContainerHeight;
+
+  TextEditingController tecCouponText = TextEditingController();
+
+  bool _couponUsed = false;
+  bool get couponUsed => _couponUsed;
+
+  double _couponValue = 0;
+  double get couponValue => _couponValue;
+
+  List<UsersModel> _currentUserData=[];
+  List<UsersModel> get currentUserData => _currentUserData;
+
+  bool _isCouponTextEmpty = false;
+  bool get isCouponTextEmpty => _isCouponTextEmpty;
+
+  double _totalCost = 0;
+  double get totalCost => _totalCost;
+
+
   void openDuesSelectContainer(){
 
     _isOpenDuesSelectContainer = !_isOpenDuesSelectContainer;
 
     _duesSelectContainerHeight = _isOpenDuesSelectContainer ? Dimensions.screenHeight * 0.3 : 0;
+
+    update();
+
+  }
+
+  void openCouponSelectContainer(){
+
+    _isOpenCouponSelectContainer = !_isOpenCouponSelectContainer;
+
+    _couponSelectContainerHeight = _isOpenCouponSelectContainer ? Dimensions.screenHeight * 0.6 : 0;
 
     update();
 
@@ -153,6 +189,65 @@ class CreditCardController extends GetxController{
   void selectDuesNumber(int dues){
     _duesNumber = dues;
     update();
+  }
+
+  void onChangeTECCoupon(String value){
+    if(value.isNotEmpty){
+      _isCouponTextEmpty = true;
+    }else{
+      _isCouponTextEmpty = false;
+    }
+    tecCouponText.text = value.toUpperCase();
+    update();
+  }
+
+  Future<void> getCouponData() async{
+
+    Response response = await creditCardRepository.getCouponData(tecCouponText.text);
+    _currentUserData = [];
+    if(response.statusCode == 200){
+      _currentUserData.addAll(UsersListModel.fromJson(response.body).mainUsersList);
+    }else{
+      _currentUserData=[];
+    }
+
+    update();
+
+  }
+
+  Future<void> deletePromoCodeUsed() async {
+
+    Response response = await creditCardRepository.deletePromoCodeUsed();
+
+    if(response.statusCode == 200){
+      if(response.body["PromoCodeUsed"] == "OK"){
+        String a = "";
+      }
+    }else{
+      _currentUserData=[];
+    }
+
+    update();
+
+  }
+
+  void usedCoupon(String promoCode){
+    _couponUsed = true;
+    String promoCodeStr =  promoCode.substring(promoCode.length-2,promoCode.length);
+    _couponValue = Get.find<CartController>().totalAmount * (double.parse(promoCodeStr)/100);
+    calculateFinalValue();
+  }
+
+  void calculateFinalValue(){
+    _totalCost = Get.find<CartController>().totalAmount + 15000 - _couponValue;
+    update();
+  }
+
+  void clearData(){
+    _couponUsed = false;
+    _couponValue = 0;
+    _currentUserData = [];
+    tecCouponText.text = "";
   }
 
 }

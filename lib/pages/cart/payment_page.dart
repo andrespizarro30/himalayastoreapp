@@ -27,7 +27,9 @@ class PaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     SchedulerBinding.instance.addPostFrameCallback((_) async{
+      Get.find<CreditCardController>().clearData();
       Get.find<CreditCardController>().getCurrentSelectedPaymentMethod();
+      Get.find<CreditCardController>().calculateFinalValue();
     });
 
     return GetBuilder<CreditCardController>(builder: (controller){
@@ -90,7 +92,7 @@ class PaymentScreen extends StatelessWidget {
                                         Column(
                                           children: [
                                             CircleAvatar(
-                                                backgroundColor: AppColors.himalayaGrey,
+                                                backgroundColor: AppColors.himalayaWhite,
                                                 radius: Dimensions.height20 * 1.25,
                                                 child: ClipOval(
                                                     child: Image.asset(
@@ -98,6 +100,7 @@ class PaymentScreen extends StatelessWidget {
                                                       CreditCardHelper.getCardLogoFromCardNumber(cardNumber: controller.currentSelectedPaymentMethod.cardNumber!):
                                                       "assets/images/logo_pse.png",
                                                       fit: BoxFit.cover,
+                                                      colorBlendMode: BlendMode.clear,
                                                     )
                                                 )
                                             )
@@ -131,6 +134,44 @@ class PaymentScreen extends StatelessWidget {
                                         SizedBox()
                                       ],
                                     )
+                                  ),
+                                  SizedBox(height: Dimensions.height20,),
+                                  Divider(
+                                    thickness: Dimensions.height10/5,
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  SizedBox(height: Dimensions.height20,),
+                                  Container(
+                                    height: Dimensions.screenHeight/15,
+                                    width: Dimensions.screenWidth*0.9,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircleAvatar(
+                                            backgroundColor: AppColors.himalayaWhite,
+                                            radius: Dimensions.height20 * 1.25,
+                                            child: ClipOval(
+                                                child: Image.asset(
+                                                  controller.currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD && controller.currentSelectedPaymentMethod.cardNumber!.isNotEmpty ?
+                                                  CreditCardHelper.getCardLogoFromCardNumber(cardNumber: controller.currentSelectedPaymentMethod.cardNumber!):
+                                                  "assets/images/coupon.png",
+                                                  fit: BoxFit.cover,
+                                                )
+                                            )
+                                        ),
+                                        BigText(text: "Cupón",size: Dimensions.font16*1.2,),
+                                        GestureDetector(
+                                          onTap: (){
+                                            controller.openCouponSelectContainer();
+                                          },
+                                          child: SmallText(
+                                              text:"Agregar",color:
+                                              Colors.green,
+                                              size: Dimensions.font16*1.1
+                                          )
+                                        )
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(height: Dimensions.height20,),
                                   Container(
@@ -169,7 +210,17 @@ class PaymentScreen extends StatelessWidget {
                                             ],
                                           ),
                                           SizedBox(height: Dimensions.height10,),
-
+                                          Visibility(
+                                            visible: controller.couponUsed ? true : false,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text("Descuento aplicado"),
+                                                Text("-${controller.couponValue}",style: TextStyle(color: Colors.redAccent),)
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(height: Dimensions.height10,),
                                         ],
                                       ),
                                     ),
@@ -192,6 +243,164 @@ class PaymentScreen extends StatelessWidget {
                   },
                   child: ApplIcon(icon: Icons.arrow_back_ios,iconColor: Colors.black,backgroundColor: Colors.grey.shade200,size: Dimensions.iconSize24 * 1.5,)
                 )
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: AnimatedSize(
+                duration: Duration(milliseconds: 300),
+                child: Container(
+                  width: Dimensions.screenWidth*0.9,
+                  height: controller.couponSelectContainerHeight,
+                  decoration: BoxDecoration(
+                      border: Border.all(),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(Dimensions.radius30),topRight: Radius.circular(Dimensions.radius30))
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: Dimensions.height20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          BigText(text: "Cupones",size: Dimensions.font26*1.3,),
+                          SizedBox(width: Dimensions.width40,),
+                          GestureDetector(
+                              onTap: (){
+                                controller.openCouponSelectContainer();
+                              },
+                              child: Icon(Icons.close)
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: Dimensions.height20,
+                      ),
+                      Container(
+                        width: Dimensions.screenWidth*0.9,
+                        height: Dimensions.height40*4,
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  color: AppColors.himalayaGrey,
+                                  blurRadius: 20.0,
+                                  offset: Offset(0,-5)
+                              ),
+                              BoxShadow(
+                                  color: Colors.white,
+                                  offset: Offset(-5,0)
+                              ),
+                              BoxShadow(
+                                  color: Colors.white,
+                                  offset: Offset(0,-5)
+                              )
+                            ],
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius30))
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: Dimensions.height20,
+                            ),
+                            TextField(
+                              textAlign: TextAlign.center,
+                              controller: controller.tecCouponText,
+                              keyboardType: TextInputType.text,
+                              onChanged: (value) {
+                                controller.onChangeTECCoupon(value);
+                              },
+                              decoration: InputDecoration(
+                                  hintText: "Ingresa tu cupón"
+                              ),
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10,
+                            ),
+                            ElevatedButton(
+                              onPressed: (){
+                                controller.getCouponData();
+                              },
+                              child: Text(
+                                  "Validar"
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: controller.isCouponTextEmpty ? Colors.green : Colors.grey,
+                                  foregroundColor: Colors.white
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: Dimensions.height20,
+                      ),
+                      controller.currentUserData.isNotEmpty ?
+                      SingleChildScrollView(
+                        child: Column(
+                            children: List.generate(controller.currentUserData.length, (index){
+                              return Container(
+                                  height: Dimensions.screenHeight*0.22,
+                                  width: Dimensions.screenWidth*0.8,
+                                  child: Container(
+                                    height: Dimensions.screenHeight*0.3,
+                                    width: Dimensions.screenWidth*0.9,
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: AppColors.himalayaGrey,
+                                                blurRadius: 5.0,
+                                                offset: Offset(0,-1)
+                                            ),
+                                            BoxShadow(
+                                                color: AppColors.himalayaGrey,
+                                                blurRadius: 5.0,
+                                                offset: Offset(-1,0)
+                                            )
+                                          ],
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(Radius.circular(Dimensions.radius30))
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(Dimensions.height10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(controller.currentUserData[index].promoCodeDueText!,maxLines: 3,overflow: TextOverflow.visible,style: TextStyle(fontSize: Dimensions.font16 * 1.2),),
+                                            SizedBox(height: Dimensions.height10,),
+                                            Text("Vence: ${controller.currentUserData[index].promoCodeDueDate}"),
+                                            SizedBox(height: Dimensions.height10,),
+                                            ElevatedButton(
+                                              onPressed: (){
+                                                controller.usedCoupon(controller.currentUserData[index].promoCode!);
+                                                controller.openCouponSelectContainer();
+                                              },
+                                              child: Text(
+                                                "Usar cupón"
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  foregroundColor: Colors.white
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                  )
+                              );
+                            })
+                        ),
+                      ):
+                      SizedBox(
+
+                      )
+                    ],
+                  )
+                ),
+              )
             ),
             Positioned(
               left: 0,
@@ -257,23 +466,26 @@ class PaymentScreen extends StatelessWidget {
                     SmallText(text: "Total a pagar",color: AppColors.mainBlackColor,),
                     SizedBox(height: Dimensions.height10,),
                     BigText(
-                        text: "\$ ${(Get.find<CartController>().totalAmount+15000).toString()}"
+                        text: "\$ ${controller.totalCost.toString()}"
                     ),
                   ],
                 ),
                 GestureDetector(
                   onTap: () async{
                     Navigator.pop(context);
+
                     String token = await Get.find<CartController>().getPaymentToken();
 
                     if(token.isNotEmpty){
+
                       if(Get.find<CreditCardController>().currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD){
                         //PAGO TARJETA DE CREDITO
-                        Get.find<CartController>().creditCardPayment(controller);
+                        Get.find<CartController>().creditCardPayment(controller,controller.totalCost.toString());
                       }else{
                         //PAGO PSE
-                        var paymentSendData = await Get.to(() => PSEPaymentFormScreen(token: token,),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
+                        var paymentSendData = await Get.to(() => PSEPaymentFormScreen(token: token),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
                         if((paymentSendData as PSEPaymentSend).bank!.isNotEmpty && (paymentSendData as PSEPaymentSend).name!.isNotEmpty){
+                          paymentSendData.value = "5000";//CAMBIAR AQUI POR controller.totalCost.toString()
                           Get.find<CartController>().psePayment(paymentSendData as PSEPaymentSend);
                         }else{
                           showCustomSnackBar("Diligencie completamente el formulario de pago");
