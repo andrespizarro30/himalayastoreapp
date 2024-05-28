@@ -6,12 +6,10 @@ import 'package:get/get.dart';
 import 'package:himalayastoreapp/base/show_custom_message.dart';
 import 'package:himalayastoreapp/controllers/authentication_controller.dart';
 import 'package:himalayastoreapp/controllers/credit_card_page_controller.dart';
-import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/models/payment_models/pse_error_response_model.dart';
 import 'package:himalayastoreapp/models/payment_models/pse_payment_response_model.dart';
 import 'package:himalayastoreapp/models/payment_models/pse_payment_transaction_confirm_model.dart';
 import 'package:himalayastoreapp/models/user_model.dart';
-import 'package:himalayastoreapp/utils/app_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/repositories/cart_repo.dart';
@@ -310,6 +308,7 @@ class CartController extends GetxController{
         update();
       }
     }else{
+      _creditCardPaymentResponse = CreditCardPaymentResponse.fromJson(response.body);
       _isMessageSent = true;
       showCustomSnackBar("Transacción rechazada, intente de nuevo");
       update();

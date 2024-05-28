@@ -247,7 +247,7 @@ class CartScreen extends StatelessWidget {
               ),
             )
         ):
-        controller.creditCardPaymentResponse.data != null &&
+        controller.creditCardPaymentResponse.data != null && controller.creditCardPaymentResponse!.data!.transaction != null &&
           !controller.doingPayment &&
           controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Aceptada" &&
           controller.loadingNewDelivery &&
@@ -341,7 +341,7 @@ class CartScreen extends StatelessWidget {
             ),
           ),
         ) :
-        controller.creditCardPaymentResponse.data != null &&
+        controller.creditCardPaymentResponse.data != null && controller.creditCardPaymentResponse!.data!.transaction != null &&
           !controller.doingPayment &&
           controller.creditCardPaymentResponse.data!.transaction!.data!.estado == "Rechazada" &&
           !controller.loadingNewDelivery &&
@@ -451,9 +451,19 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: Dimensions.height20,),
                   Text("Error en la transacción, intente nuevamente",style: TextStyle(color: Colors.red),),
                   SizedBox(height: Dimensions.height20,),
-                  Text(controller.pseErrorTransaction.textResponse ?? ""),
+                  Text(controller.pseErrorTransaction.textResponse != null ?
+                        controller.pseErrorTransaction.textResponse! :
+                        controller.creditCardPaymentResponse.textResponse != null ?
+                        controller.creditCardPaymentResponse.textResponse! :
+                        ""
+                  ),
                   SizedBox(height: Dimensions.height20,),
-                  Text(controller.pseErrorTransaction!.data!.error!.errores![0].errorMessage!),
+                  Text(controller.pseErrorTransaction!.data != null ?
+                      controller.pseErrorTransaction!.data!.error!.errores![0].errorMessage! :
+                      controller.creditCardPaymentResponse.lastAction != null ?
+                      controller.creditCardPaymentResponse.lastAction! :
+                      ""
+                  ),
                   SizedBox(height: Dimensions.height20,),
                   SizedBox(height: Dimensions.height20,),
                   RawMaterialButton(
@@ -513,9 +523,11 @@ class CartScreen extends StatelessWidget {
                       if(Get.find<AuthenticationPageController>().signUpBody!.phone!.isNotEmpty){
                         if(Get.find<MainPageController>().currentAddressDetailModel.position!.isNotEmpty &&
                             Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress! != "Ingrese su dirección"){
-
-                          Get.to(() => PaymentScreen(),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
-
+                          if(controller.totalAmount >= 50000){
+                            Get.to(() => PaymentScreen(),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
+                          }else{
+                            showCustomSnackBar("Valor mínimo de pedido \$50.000",backgroundColor: Colors.redAccent);
+                          }
                         }else{
                           showCustomSnackBar("Ingrese una dirección de domicilio",backgroundColor: AppColors.himalayaGrey);
                         }

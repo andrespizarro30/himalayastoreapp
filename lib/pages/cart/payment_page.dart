@@ -151,10 +151,7 @@ class PaymentScreen extends StatelessWidget {
                                             backgroundColor: AppColors.himalayaWhite,
                                             radius: Dimensions.height20 * 1.25,
                                             child: ClipOval(
-                                                child: Image.asset(
-                                                  controller.currentSelectedPaymentMethod.cardNumber != AppConstants.PSE_PAYMENT_METHOD && controller.currentSelectedPaymentMethod.cardNumber!.isNotEmpty ?
-                                                  CreditCardHelper.getCardLogoFromCardNumber(cardNumber: controller.currentSelectedPaymentMethod.cardNumber!):
-                                                  "assets/images/coupon.png",
+                                                child: Image.asset("assets/images/coupon.png",
                                                   fit: BoxFit.cover,
                                                 )
                                             )
