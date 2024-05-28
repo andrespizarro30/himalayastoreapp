@@ -485,7 +485,8 @@ class PaymentScreen extends StatelessWidget {
                         //PAGO PSE
                         var paymentSendData = await Get.to(() => PSEPaymentFormScreen(token: token),transition: Transition.rightToLeft,duration: Duration(milliseconds: 300));
                         if((paymentSendData as PSEPaymentSend).bank!.isNotEmpty && (paymentSendData as PSEPaymentSend).name!.isNotEmpty){
-                          paymentSendData.value = "5000";//CAMBIAR AQUI POR controller.totalCost.toString()
+                          //paymentSendData.value = "5000";//CAMBIAR AQUI POR controller.totalCost.toString()
+                          paymentSendData.value = controller.totalCost.toString();
                           Get.find<CartController>().psePayment(paymentSendData as PSEPaymentSend);
                         }else{
                           showCustomSnackBar("Diligencie completamente el formulario de pago");

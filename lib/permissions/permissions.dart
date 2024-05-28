@@ -21,8 +21,8 @@ void requestGeolocationPermissions() async{
 
   await Geolocator.requestPermission();
   permission = await Geolocator.checkPermission();
-  if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
-    var status = await Permission.locationAlways.request();
+  if(permission == LocationPermission.whileInUse){
+    var status = await Permission.locationWhenInUse.request();
     if(status.isGranted){
       Get.find<MainPageController>().setLocationUpdates();
     }else{
@@ -34,10 +34,10 @@ void requestGeolocationPermissions() async{
     await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.checkPermission();
-      if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
-        var status = await Permission.locationAlways.request();
+      if(permission == LocationPermission.whileInUse){
+        var status = await Permission.locationWhenInUse.request();
         if(status.isGranted){
-
+          Get.find<MainPageController>().setLocationUpdates();
         }else{
 
         }
@@ -47,10 +47,10 @@ void requestGeolocationPermissions() async{
 
   if (permission == LocationPermission.deniedForever) {
     permission = await Geolocator.checkPermission();
-    if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
-      var status = await Permission.locationAlways.request();
+    if(permission == LocationPermission.whileInUse){
+      var status = await Permission.locationWhenInUse.request();
       if(status.isGranted){
-
+        Get.find<MainPageController>().setLocationUpdates();
       }else{
 
       }

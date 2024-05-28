@@ -451,7 +451,7 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: Dimensions.height20,),
                   Text("Error en la transacción, intente nuevamente",style: TextStyle(color: Colors.red),),
                   SizedBox(height: Dimensions.height20,),
-                  Text(controller.pseErrorTransaction.textResponse!),
+                  Text(controller.pseErrorTransaction.textResponse ?? ""),
                   SizedBox(height: Dimensions.height20,),
                   Text(controller.pseErrorTransaction!.data!.error!.errores![0].errorMessage!),
                   SizedBox(height: Dimensions.height20,),

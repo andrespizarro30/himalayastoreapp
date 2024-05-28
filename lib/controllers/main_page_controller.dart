@@ -155,7 +155,7 @@ class MainPageController extends GetxController implements GetxService{
     );
 
     StreamSubscription<Position> positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen((position) {
-      print(position == null ? 'Unknown' : '${position.latitude},${position.longitude}');
+      //print(position == null ? 'Unknown' : '${position.latitude},${position.longitude}');
     });
 
   }

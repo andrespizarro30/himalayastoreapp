@@ -277,7 +277,8 @@ class CartController extends GetxController{
   Future<void> creditCardPayment(CreditCardController creditCardController,String totalCost) async{
 
     CreditCardPaymentSend creditCardPaymentSend = CreditCardPaymentSend();
-    creditCardPaymentSend.value = "5000";//CAMBIAR AQUI POR totalCost
+    //creditCardPaymentSend.value = "5000";//CAMBIAR AQUI POR totalCost
+    creditCardPaymentSend.value = totalCost;
     creditCardPaymentSend.docType = "CC";
     creditCardPaymentSend.docNumber = "111111";
     creditCardPaymentSend.name = creditCardController.currentSelectedPaymentMethod.cardHolderName;

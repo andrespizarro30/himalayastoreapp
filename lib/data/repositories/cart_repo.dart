@@ -50,7 +50,6 @@ class CartRepo extends GetxService{
       cart.add(json.encode(element.toJson()));
     });
 
-
     //carList.forEach((element) => cart.add(json.encode(element.toJson())));
     
     sharedPreferences.setStringList(AppConstants.CART_LIST, cart);

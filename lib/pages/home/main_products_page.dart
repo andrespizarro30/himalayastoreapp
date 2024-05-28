@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/pages/home/product_body_page.dart';
+import 'package:himalayastoreapp/utils/app_constants.dart';
 
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/cart_controller.dart';
@@ -59,7 +61,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                                 onTap: (){
                                   mainPageController.getSavedAddress();
                                   mainPageController.openAdressRequestContainer();
-                                  requestLocationPermissions();
+                                  openLocationRequestPermissionDialogBox(context,mainPageController);
                                 },
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
@@ -338,6 +340,170 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
 
   Future<void> requestLocationPermissions()async{
     requestGeolocationPermissions();
+  }
+
+  Future<void> openLocationRequestPermissionDialogBox(BuildContext context, MainPageController controller) async{
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever){
+      var response = await showDialog(
+          context: context,
+          builder: (BuildContext c) => locationPermissionDialog(controller,c));
+    }
+
+  }
+
+  Widget locationPermissionDialog(MainPageController controller,BuildContext context){
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14)
+      ),
+      backgroundColor: AppColors.himalayaBlue,
+      child: Container(
+        height: Dimensions.screenHeight/1.5,
+        width: Dimensions.screenWidth * 3,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.warning_rounded,
+              color: AppColors.himalayaBlue,
+              size: Dimensions.iconSize24 * 3,
+            ),
+            const SizedBox(height: 10,),
+            Text(
+              "Consentimiento de acceso a su localización",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 20,),
+            Divider(
+              thickness: 3,
+              color: AppColors.himalayaBlue,
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+              child: Text(
+                "Himalaya Tienda Fitness requiere acceso a su ubicación solo mientras se realiza el proceso de configuración de su dirección de entrega "
+                    "de nuestros productos, al estar de acuerdo aceptando este permiso, Himalaya Tienda Fitness garantiza que:",
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10,),
+
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+              child: Text(
+                "1. Su ubicación será utilizada solo con el fin de facilitar y garantizar la dirección de entrega.",
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10,),
+
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.width20,right: Dimensions.width20),
+              child: Text(
+                "2. Los datos de ubicación (latitud y/o longitud) no serán almacenados en ninguna base de datos o contenedor similar.",
+                textAlign: TextAlign.justify,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+
+
+            SizedBox(height: Dimensions.height30,),
+
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.height10,right: Dimensions.height10,bottom: 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async{
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "CANCEL",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 10
+                          ),
+                        ),
+                        Icon(
+                          Icons.cancel,
+                          color: Colors.white,
+                          size: 13,
+                        )
+                      ],
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.himalayaBlue
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async{
+                      requestLocationPermissions();
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "DE ACUERDO",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 10
+                          ),
+                        ),
+                        Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 13,
+                        )
+                      ],
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.himalayaBlue
+                    ),
+                  )
+                ],
+              )
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
 }
