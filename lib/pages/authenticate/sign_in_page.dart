@@ -1,6 +1,8 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/pages/authenticate/sign_up_page.dart';
 
@@ -61,12 +63,15 @@ class SignInScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(height: Dimensions.screenHeight * 0.05,),
-                  Container(
-                    child: Center(
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: Dimensions.radius20 * 4,
-                        backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
+                  Semantics(
+                    label: "Logo de Himalaya Mercado Saludable",
+                    child: Container(
+                      child: Center(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: Dimensions.radius20 * 4,
+                          backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
+                        ),
                       ),
                     ),
                   ),
@@ -105,20 +110,23 @@ class SignInScreen extends StatelessWidget {
                   ),
                   SizedBox(height: Dimensions.height20,),
 
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        RichText(
-                            text: TextSpan(
-                                text: "Ingresa a tu cuenta",
-                                style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: Dimensions.font20
-                                )
-                            )
-                        ),
-                        SizedBox(width: Dimensions.width20,)
-                      ]
+                  Semantics(
+                    label: "Texto informativo",
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  text: "Ingresa a tu cuenta",
+                                  style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontSize: Dimensions.font20
+                                  )
+                              )
+                          ),
+                          SizedBox(width: Dimensions.width20,)
+                        ]
+                    ),
                   ),
 
                   SizedBox(height: Dimensions.height20,),
@@ -127,18 +135,21 @@ class SignInScreen extends StatelessWidget {
                     onTap: (){
                       _login(controller);
                     },
-                    child: Container(
-                      width: Dimensions.screenWidth/2,
-                      height: Dimensions.screenHeight/13,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(Dimensions.radius30),
-                          color: AppColors.himalayaBlue
-                      ),
-                      child: Center(
-                        child: BigText(
-                          text: "Ingresar",
-                          size: Dimensions.font20*1.5,
-                          color: Colors.white,
+                    child: Semantics(
+                      label: "Botón de ingreso",
+                      child: Container(
+                        width: Dimensions.screenWidth/2,
+                        height: Dimensions.screenHeight/13,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(Dimensions.radius30),
+                            color: AppColors.himalayaBlue
+                        ),
+                        child: Center(
+                          child: BigText(
+                            text: "Ingresar",
+                            size: Dimensions.font20*1.5,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -147,26 +158,29 @@ class SignInScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      RichText(
-                          text: TextSpan(
-                              text: "No tienes una cuenta? ",
-                              style: TextStyle(
-                                  color: Colors.grey[500],
-                                  fontSize: Dimensions.font20
-                              ),
-                              children: [
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()..onTap=()=>Get.to(()=>SignUpScreen(),transition: Transition.fade),
-                                    text: "Crea una aquí",
-                                    style: TextStyle(
-                                      color: AppColors.mainBlackColor,
-                                      fontSize: Dimensions.font20,
-                                      fontWeight: FontWeight.bold,
+                      Semantics(
+                        label: "Crea una cuenta de usuario aquí",
+                        child: RichText(
+                            text: TextSpan(
+                                text: "No tienes una cuenta? ",
+                                style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: Dimensions.font20
+                                ),
+                                children: [
+                                  TextSpan(
+                                      recognizer: TapGestureRecognizer()..onTap=()=>Get.to(()=>SignUpScreen(),transition: Transition.fade),
+                                      text: "Crea una aquí",
+                                      style: TextStyle(
+                                        color: AppColors.mainBlackColor,
+                                        fontSize: Dimensions.font20,
+                                        fontWeight: FontWeight.bold,
 
-                                    )
-                                )
-                              ]
-                          )
+                                      )
+                                  )
+                                ]
+                            )
+                        ),
                       )
                     ],
                   )

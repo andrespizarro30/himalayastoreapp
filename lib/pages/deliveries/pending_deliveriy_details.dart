@@ -28,7 +28,10 @@ class PendingDeliveryDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Detalle del pedido"),
+        title: Semantics(
+          label: "Página de detalle del pedido",
+          child: Text("Detalle del pedido")
+        ),
       ),
       body: GetBuilder<PendingDeliviresController>(builder: (controller){
         return controller.pendingDeliveryDetailList.isNotEmpty ?

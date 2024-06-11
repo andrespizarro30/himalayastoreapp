@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
+import 'package:himalayastoreapp/base/show_custom_message.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/widgets/product_detail_column.dart';
 import 'package:dots_indicator/dots_indicator.dart';
@@ -85,10 +86,27 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
                       return GestureDetector(
                           onTap: (){
                             if(controller.productMap[product_category]![index].product_qty_available! > 0){
+                              controller.selectCurrentProduct(index);
                               Get.toNamed(RouteHelper.getProductDetails(index.toString(),product_category));
+                            }else{
+                              showCustomSnackBar("Producto no dispobible en el momento", title: "Sin Dispobilidad", backgroundColor: Colors.deepOrangeAccent);
                             }
                           },
-                          child: _buildPageItem(index,controller.productMap[product_category]![index])
+                          child: Semantics(
+                            label: "Click para conocer información del producto",
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: index == controller.productIndexSelected ? [
+                                  BoxShadow(
+                                      offset: const Offset(-5,-10),
+                                      color: AppColors.himalayaBlue
+                                  )
+                                ]:
+                                []
+                              ),
+                              child: _buildPageItem(index,controller.productMap[product_category]![index])
+                            ),
+                          )
                       );
                     }
                 ),
@@ -197,17 +215,31 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
             tag: product.id.toString(),
             child: Container(
                 height: Dimensions.pageViewContainer,
+                width: Dimensions.screenWidth * 0.8,
                 margin: EdgeInsets.only(left: Dimensions.width10,right: Dimensions.width10),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Dimensions.radius30),
                     //color: index.isEven?Color(0xFF69c5df):Color(0xFF9294cc),
+                    /*
                     image: DecorationImage(
                         image: NetworkImage(
                             product.productImage!
                         ),
                         fit: BoxFit.cover
                     )
-                )
+                    */
+                ),
+                child: Semantics(
+                  label: "Imagen de ${product.productName}",
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Dimensions.radius30),
+                    child: FadeInImage(
+                        placeholder: AssetImage('assets/images/loading_gif.gif'),
+                        image: Image.network(product.productImage!).image,
+                        fit: BoxFit.cover
+                    ),
+                  ),
+                ),
             ),
           ),
           Positioned(

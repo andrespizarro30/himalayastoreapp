@@ -18,16 +18,19 @@ class SmallText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      textAlign: TextAlign.justify,
-      style: TextStyle(
-          color: color,
-          fontFamily: 'Roboto',
-          fontSize: size,
-          height: height
+    return Semantics(
+      label: text,
+      child: Text(
+        text,
+        textAlign: TextAlign.justify,
+        style: TextStyle(
+            color: color,
+            fontFamily: 'Roboto',
+            fontSize: size,
+            height: height
+        ),
+        overflow: overflow,
       ),
-      overflow: overflow,
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
@@ -33,6 +35,8 @@ class ProductDetailScreen extends StatelessWidget {
 
     ProductModel product = Get.find<ProductPagerViewController>().productMap[product_category]![index];
     Get.find<ProductsPageController>().initProduct(product,Get.find<CartController>());
+    Get.find<ProductPagerViewController>().unSelectCurrentProduct();
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -44,16 +48,19 @@ class ProductDetailScreen extends StatelessWidget {
                 right: 0,
                 child: Hero(
                   tag: product.id.toString(),
-                  child: Container(
-                    width: double.maxFinite,
-                    height: Dimensions.productDetailImgSize,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                product.productImage2!
-                            ),
-                            fit: BoxFit.cover
-                        )
+                  child: Semantics(
+                    label: "Imagen de ${product.productName}",
+                    child: Container(
+                      width: double.maxFinite,
+                      height: Dimensions.productDetailImgSize,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  product.productImage2!
+                              ),
+                              fit: BoxFit.cover
+                          )
+                      ),
                     ),
                   ),
                 )
@@ -66,7 +73,7 @@ class ProductDetailScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      child: ApplIcon(icon: Icons.clear),
+                      child: Semantics(label: "Botón cerrar",child: ApplIcon(icon: Icons.clear)),
                       onTap: (){
                         Navigator.pop(context);
                       },
@@ -79,7 +86,7 @@ class ProductDetailScreen extends StatelessWidget {
                       },
                       child: Stack(
                         children: [
-                          ApplIcon(icon: Icons.shopping_cart_outlined),
+                          Semantics(label: "Carrito de compras con ${controller.totalItems} items dentro", child: ApplIcon(icon: Icons.shopping_cart_outlined)),
                           controller.totalItems>=1 ?
                           Positioned(
                               right: 0,
@@ -147,9 +154,12 @@ class ProductDetailScreen extends StatelessWidget {
                   onPressed: () {
                     Get.to(() => ProductMoreDetailsScreen(product: product),transition: Transition.rightToLeft,duration: Duration(milliseconds: 500));
                   },
-                  child: Icon(
-                    Icons.info_outline,
-                    color: AppColors.himalayaWhite,
+                  child: Semantics(
+                    label: "Botón información mas detallada del producto",
+                    child: Icon(
+                      Icons.info_outline,
+                      color: AppColors.himalayaWhite,
+                    ),
                   ),
                 )
             ),
@@ -183,7 +193,7 @@ class ProductDetailScreen extends StatelessWidget {
                     onPressed: () {
                       controller.openCommentContainer();
                     },
-                    child: Icon(Icons.close,color: AppColors.himalayaWhite,),
+                    child: Semantics(label:"Botón cerrar comentarios",child: Icon(Icons.close,color: AppColors.himalayaWhite,)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
@@ -230,11 +240,14 @@ class ProductDetailScreen extends StatelessWidget {
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            radius: Dimensions.height20 * 1.25,
-                                            backgroundImage: NetworkImage(
-                                                photoLink
+                                          Semantics(
+                                            label:"Imagen de usuario que califica el producto",
+                                            child: CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              radius: Dimensions.height20 * 1.25,
+                                              backgroundImage: NetworkImage(
+                                                  photoLink
+                                              ),
                                             ),
                                           ),
                                           SizedBox(width: Dimensions.width20,),
@@ -243,7 +256,7 @@ class ProductDetailScreen extends StatelessWidget {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Text(controller.ratingsProductList[index].buyerName!),
+                                                Semantics(label: "Nombre de usuario que califica el producto",child: Text(controller.ratingsProductList[index].buyerName!)),
                                                 ChatBubble(message: controller.ratingsProductList[index].productComment!,bubbleColor: AppColors.himalayaBlue,),
                                               ],
                                             ),
@@ -258,12 +271,15 @@ class ProductDetailScreen extends StatelessWidget {
                             ),
                           ),
                         ):
-                        Container(
-                          width: double.maxFinite,
-                          height: Dimensions.screenHeight * 0.7,
-                          child: NoDataPage(
-                            text: "Sin comentarios aún, obtén este producto y se el primero !!!",
-                            imgPath: "assets/images/empty_bubble.png",
+                        Semantics(
+                          label: "Imagen que muestra que no hay comentarios",
+                          child: Container(
+                            width: double.maxFinite,
+                            height: Dimensions.screenHeight * 0.7,
+                            child: NoDataPage(
+                              text: "Sin comentarios aún, obtén este producto y se el primero !!!",
+                              imgPath: "assets/images/empty_bubble.png",
+                            ),
                           ),
                         ):
                         Container(
@@ -306,7 +322,7 @@ class ProductDetailScreen extends StatelessWidget {
                         onTap:(){
                           productContoller.setQuantity(false);
                         },
-                        child: Icon(Icons.remove,color: AppColors.signColor,)
+                        child: Semantics(label: "Quitar una unidad de producto del carrito",child: Icon(Icons.remove,color: AppColors.signColor,))
                     ),
                     SizedBox(width: Dimensions.width10/2,),
                     BigText(
@@ -317,7 +333,7 @@ class ProductDetailScreen extends StatelessWidget {
                         onTap: (){
                           productContoller.setQuantity(true);
                         },
-                        child: Icon(Icons.add,color: AppColors.signColor,)
+                        child: Semantics(label:"Agregar una unidad de producto del carrito",child: Icon(Icons.add,color: AppColors.signColor,))
                     ),
                   ],
                 ),
@@ -327,12 +343,15 @@ class ProductDetailScreen extends StatelessWidget {
                   productContoller.addItem(product);
                   Get.find<CartController>().refreshOne();
                 },
-                child: Container(
-                  padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
-                  child: BigText(text: "\$ ${product.productPrice!} | Add to cart", color: Colors.white,),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      color: AppColors.himalayaBlue
+                child: Semantics(
+                  label: "Botón agregar productos al carrito",
+                  child: Container(
+                    padding: EdgeInsets.only(top: Dimensions.height20,bottom: Dimensions.height20,right: Dimensions.width20,left: Dimensions.width20),
+                    child: BigText(text: "\$ ${product.productPrice!} | Agregar", color: Colors.white,),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimensions.radius20),
+                        color: AppColors.himalayaBlue
+                    ),
                   ),
                 ),
               )

@@ -20,12 +20,15 @@ class AccountWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(left: Dimensions.width20,top: Dimensions.height10,bottom: Dimensions.height10,right: Dimensions.width20),
-      child: Row(
-        children: [
-          applIcon,
-          SizedBox(width: Dimensions.width20,),
-          Flexible(child: bigText)
-        ],
+      child: Semantics(
+        label: "Información de usuario",
+        child: Row(
+          children: [
+            applIcon,
+            SizedBox(width: Dimensions.width20,),
+            Flexible(child: bigText)
+          ],
+        ),
       ),
       decoration: BoxDecoration(
         color: Colors.white,

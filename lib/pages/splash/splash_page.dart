@@ -58,10 +58,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       backgroundColor: AppColors.himalayaWhite,
       body: ScaleTransition(
         scale: animation,
-        child: Center(
-          child: Image.asset(
-            "assets/images/himalaya_logo.png",
-            width: Dimensions.splashImg,
+        child: Semantics(
+          label: "Logo de inicio de Himalaya Mercado Saludable",
+          child: Center(
+            child: Image.asset(
+              "assets/images/himalaya_logo.png",
+              width: Dimensions.splashImg,
+            ),
           ),
         ),
       ),

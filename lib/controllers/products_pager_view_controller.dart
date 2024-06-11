@@ -20,6 +20,9 @@ class ProductPagerViewController extends GetxController{
   Map<String,bool> _isLoaded = {};
   Map<String,bool> get isLoaded => _isLoaded;
 
+  int _productIndexSelected = -1;
+  int get productIndexSelected => _productIndexSelected;
+
   Future<void> getProductsListByCategory(String product_category)async{
 
     if(!_isLoaded.containsKey(product_category)){
@@ -74,6 +77,15 @@ class ProductPagerViewController extends GetxController{
 
     _isLoaded = {};
 
+  }
+
+  void selectCurrentProduct(int index){
+    _productIndexSelected = index;
+    update();
+  }
+
+  void unSelectCurrentProduct(){
+    _productIndexSelected = -1;
   }
 
 }

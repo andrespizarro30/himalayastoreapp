@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -47,7 +48,7 @@ class CartHistoryScreen extends StatelessWidget {
                   onTap: () async{
                     await Get.find<CartController>().getDeliveryByUIDandID();
                   },
-                  child: Icon(Icons.refresh),
+                  child: Semantics(label: "Actualizar registros",child: Icon(Icons.refresh)),
                 ),
                 GetBuilder<CartController>(builder: (controller){
                   return GestureDetector(
@@ -58,7 +59,7 @@ class CartHistoryScreen extends StatelessWidget {
                     },
                     child: Stack(
                       children: [
-                        ApplIcon(icon: Icons.shopping_cart_outlined),
+                        Semantics(label: "Carrito de compras con ${controller.totalItems} items",child: ApplIcon(icon: Icons.shopping_cart_outlined)),
                         controller.totalItems>=1 ?
                         Positioned(
                             right: 0,

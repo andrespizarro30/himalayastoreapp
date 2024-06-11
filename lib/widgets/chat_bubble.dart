@@ -23,14 +23,17 @@ class ChatBubble extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: bubbleColor
       ),
-      child: Text(
-        message,
-        style: TextStyle(
-          fontSize: 13,
-          color: AppColors.mainBlackColor
+      child: Semantics(
+        label: "Opinión de usuario que califica el producto, ${message}",
+        child: Text(
+          message,
+          style: TextStyle(
+            fontSize: 13,
+            color: AppColors.mainBlackColor
+          ),
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
         ),
-        maxLines: 5,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }

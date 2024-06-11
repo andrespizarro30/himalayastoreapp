@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,6 +9,7 @@ import 'package:himalayastoreapp/controllers/main_page_controller.dart';
 import 'package:himalayastoreapp/controllers/products_page_controller.dart';
 import 'package:himalayastoreapp/pages/home/product_body_page.dart';
 import 'package:himalayastoreapp/utils/app_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controllers/authentication_controller.dart';
 import '../../controllers/cart_controller.dart';
@@ -58,52 +62,63 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               GestureDetector(
-                                onTap: (){
-                                  mainPageController.getSavedAddress();
-                                  mainPageController.openAdressRequestContainer();
-                                  openLocationRequestPermissionDialogBox(context,mainPageController);
+                                onTap: () async{
+                                  LocationPermission permission = await Geolocator.checkPermission();
+
+                                  if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever){
+                                    openLocationRequestPermissionDialogBox(context,mainPageController);
+                                  }else{
+                                    mainPageController.getSavedAddress();
+                                    mainPageController.openAdressRequestContainer();
+                                  }
                                 },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        BigText(
-                                            text: mainPageController.currentAddressDetailModel.cityCountryAddress!.length>=35 ?
-                                            "${mainPageController.currentAddressDetailModel.cityCountryAddress!.substring(0,35)}..." :
-                                            mainPageController.currentAddressDetailModel.cityCountryAddress!,
-                                            color: AppColors.himalayaBlue
-                                        ),
-                                        Icon(Icons.arrow_drop_down)
-                                      ],
-                                    ),
-                                    SmallText(
-                                      text: mainPageController.currentAddressDetailModel.formattedAddress!.length>=35 ?
-                                      "${mainPageController.currentAddressDetailModel.formattedAddress!.substring(0,35)}..." :
-                                      mainPageController.currentAddressDetailModel.formattedAddress!,
-                                      color: Colors.black54,
-                                      size: 14,
-                                      overflow: TextOverflow.ellipsis
-                                    ),
-                                  ],
+                                child: Semantics(
+                                  label: "Configurar dirección de entrega",
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          BigText(
+                                              text: mainPageController.currentAddressDetailModel.cityCountryAddress!.length>=35 ?
+                                              "${mainPageController.currentAddressDetailModel.cityCountryAddress!.substring(0,35)}..." :
+                                              mainPageController.currentAddressDetailModel.cityCountryAddress!,
+                                              color: AppColors.himalayaBlue
+                                          ),
+                                          Icon(Icons.arrow_drop_down)
+                                        ],
+                                      ),
+                                      SmallText(
+                                        text: mainPageController.currentAddressDetailModel.formattedAddress!.length>=35 ?
+                                        "${mainPageController.currentAddressDetailModel.formattedAddress!.substring(0,35)}..." :
+                                        mainPageController.currentAddressDetailModel.formattedAddress!,
+                                        color: Colors.black54,
+                                        size: 14,
+                                        overflow: TextOverflow.ellipsis
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               Center(
-                                child: Container(
-                                  width: Dimensions.width45,
-                                  height: Dimensions.height45,
-                                  child: Get.find<AuthenticationPageController>().currentFBUserExists ?
-                                  CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 80,
-                                    backgroundImage: NetworkImage(
-                                      Get.find<AuthenticationPageController>().profileImageURL,
+                                child: Semantics(
+                                  label: "Imagen de perfil de usuario",
+                                  child: Container(
+                                    width: Dimensions.width45,
+                                    height: Dimensions.height45,
+                                    child: Get.find<AuthenticationPageController>().currentFBUserExists ?
+                                    CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 80,
+                                      backgroundImage: NetworkImage(
+                                        Get.find<AuthenticationPageController>().profileImageURL,
+                                      ),
+                                    ):
+                                    Icon(Icons.person,color: AppColors.himalayaGrey,size: Dimensions.iconSize24,),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(Dimensions.radius15),
+                                        color: AppColors.himalayaWhite
                                     ),
-                                  ):
-                                  Icon(Icons.person,color: AppColors.himalayaGrey,size: Dimensions.iconSize24,),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(Dimensions.radius15),
-                                      color: AppColors.himalayaWhite
                                   ),
                                 ),
                               )
@@ -117,6 +132,27 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                           )
                       )
                     ],
+                  ),
+                  Positioned(
+                      right: Dimensions.screenWidth/3,
+                      left: Dimensions.screenWidth/3,
+                      top: Dimensions.screenHeight * 0.1,
+                      child: mainPageController.isOpenAddressRequestContainer ?
+                      GestureDetector(
+                        onTap: (){
+                          mainPageController.openAdressRequestContainer();
+                        },
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            mainPageController.openAdressRequestContainer();
+                          },
+                          child: Icon(Icons.close,color: AppColors.himalayaWhite,),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          backgroundColor: Colors.black45,
+                        ),
+                      ):SizedBox(width: 0,height: 0,)
                   ),
                   Positioned(
                       left: 0,
@@ -133,6 +169,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                             height: mainPageController.addressRequestContainerHeight,
                             decoration: BoxDecoration(
                                 color: Colors.white,
+                                border: Border.all(),
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(Dimensions.radius30),
                                     topRight: Radius.circular(Dimensions.radius30)
@@ -344,13 +381,9 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
 
   Future<void> openLocationRequestPermissionDialogBox(BuildContext context, MainPageController controller) async{
 
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever){
-      var response = await showDialog(
-          context: context,
-          builder: (BuildContext c) => locationPermissionDialog(controller,c));
-    }
+    var response = await showDialog(
+        context: context,
+        builder: (BuildContext c) => locationPermissionDialog(controller,c));
 
   }
 
@@ -362,13 +395,14 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
       ),
       backgroundColor: AppColors.himalayaBlue,
       child: Container(
-        height: Dimensions.screenHeight/1.5,
+        height: Dimensions.screenHeight/1.4,
         width: Dimensions.screenWidth * 3,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
@@ -452,7 +486,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "CANCEL",
+                          "NO ACEPTO",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -479,7 +513,7 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "DE ACUERDO",
+                          "ACEPTO",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -500,6 +534,29 @@ class _MainProductsScreenState extends State<MainProductsScreen> {
                 ],
               )
             ),
+            SizedBox(
+              height: Dimensions.height20,
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: Dimensions.width20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      final Uri url = Uri.parse("https://s3.privyr.com/privacy/privacy-policy.html?d=eyJlbWFpbCI6ImFuZHJlcy5waXphcnJvQGFmc29mdHdhcmVzb2x1dGlvbnMuY29tIiwiY29tcGFueSI6IkhpbWFsYXlhIFRpZW5kYSBGaXRuZXNzIiwiZ2VuX2F0IjoiMjAyNC0wNS0xNVQyMjo1NDowOS4wODNaIn0%3D");
+                      launchUrl(url, mode: LaunchMode.externalApplication);
+                    },
+                    child: Text(
+                      "Política de privacidad",
+                      style: TextStyle(
+                        color: Colors.blueAccent
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

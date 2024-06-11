@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/pages/cart/payment_page.dart';
@@ -45,11 +47,14 @@ class CartScreen extends StatelessWidget {
                         onTap:(){
                           Navigator.pop(context);
                         },
-                        child: ApplIcon(
-                          icon: Icons.arrow_back_ios,
-                          iconColor: Colors.white,
-                          backgroundColor: AppColors.himalayaBlue,
-                          iconSize: Dimensions.iconSize24,
+                        child: Semantics(
+                          label: "Botón ir atrás",
+                          child: ApplIcon(
+                            icon: Icons.arrow_back_ios,
+                            iconColor: Colors.white,
+                            backgroundColor: AppColors.himalayaBlue,
+                            iconSize: Dimensions.iconSize24,
+                          ),
                         ),
                       ),
                     ),
@@ -57,11 +62,14 @@ class CartScreen extends StatelessWidget {
                     GetBuilder<CartController>(builder: (controller){
                       return Stack(
                         children: [
-                          ApplIcon(
-                            icon: Icons.shopping_cart_outlined,
-                            iconColor: Colors.white,
-                            backgroundColor: AppColors.himalayaBlue,
-                            iconSize: Dimensions.iconSize24,
+                          Semantics(
+                            label: "Icono carrito de compra con ${controller.totalItems} items",
+                            child: ApplIcon(
+                              icon: Icons.shopping_cart_outlined,
+                              iconColor: Colors.white,
+                              backgroundColor: AppColors.himalayaBlue,
+                              iconSize: Dimensions.iconSize24,
+                            ),
                           ),
                           controller.totalItems>=1 ?
                           Positioned(
@@ -124,19 +132,22 @@ class CartScreen extends StatelessWidget {
 
                                       Get.toNamed(RouteHelper.getProductDetails(productIndex.toString(),productCategory));
                                     },
-                                    child: Container(
-                                      width: Dimensions.width20 * 5,
-                                      height: Dimensions.height20 * 5,
-                                      margin: EdgeInsets.only(bottom: Dimensions.height10),
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                  _cartList[index].img!
-                                              )
-                                          ),
-                                          borderRadius: BorderRadius.circular(Dimensions.radius20),
-                                          color: Colors.white
+                                    child: Semantics(
+                                      label:"Imagen de producto ${_cartList[index].name}",
+                                      child: Container(
+                                        width: Dimensions.width20 * 5,
+                                        height: Dimensions.height20 * 5,
+                                        margin: EdgeInsets.only(bottom: Dimensions.height10),
+                                        decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                    _cartList[index].img!
+                                                )
+                                            ),
+                                            borderRadius: BorderRadius.circular(Dimensions.radius20),
+                                            color: Colors.white
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -169,18 +180,21 @@ class CartScreen extends StatelessWidget {
                                                               onTap:(){
                                                                 controller.addItem(_cartList[index].productModel!, -1);
                                                               },
-                                                              child: Icon(Icons.remove,color: AppColors.signColor,)
+                                                              child: Semantics(label:"Quitar una unidad de producto del carrito",child: Icon(Icons.remove,color: AppColors.signColor,))
                                                           ),
                                                           SizedBox(width: Dimensions.width10/2,),
-                                                          BigText(
-                                                              text: _cartList[index].quantity!.toString()
+                                                          Semantics(
+                                                            label: "${_cartList[index].quantity!.toString()} unidades de ${_cartList[index].name} en el carrito",
+                                                            child: BigText(
+                                                                text: _cartList[index].quantity!.toString()
+                                                            ),
                                                           ),
                                                           SizedBox(width: Dimensions.width10/2,),
                                                           GestureDetector(
                                                               onTap: (){
                                                                 controller.addItem(_cartList[index].productModel!, 1);
                                                               },
-                                                              child: Icon(Icons.add,color: AppColors.signColor,)
+                                                              child: Semantics(label:"Agregar una unidad de producto del carrito",child: Icon(Icons.add,color: AppColors.signColor,))
                                                           ),
                                                         ],
                                                       ),
@@ -508,14 +522,17 @@ class CartScreen extends StatelessWidget {
             child: _cartList.length>0 ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  children: [
-                    SmallText(text: "Sub total",color: AppColors.mainBlackColor,),
-                    SizedBox(height: Dimensions.height10,),
-                    BigText(
-                        text: "\$ ${controller.totalAmount.toString()}"
-                    ),
-                  ],
+                Semantics(
+                  label: "Sub total ${controller.totalAmount.toString()} pesos",
+                  child: Column(
+                    children: [
+                      SmallText(text: "Sub total",color: AppColors.mainBlackColor,),
+                      SizedBox(height: Dimensions.height10,),
+                      BigText(
+                          text: "\$ ${controller.totalAmount.toString()}"
+                      ),
+                    ],
+                  ),
                 ),
                 GestureDetector(
                   onTap: () async{
@@ -539,12 +556,15 @@ class CartScreen extends StatelessWidget {
                       Get.toNamed(RouteHelper.signIn);
                     }
                   },
-                  child: Container(
-                    padding: EdgeInsets.only(top: Dimensions.height10,bottom: Dimensions.height10,right: Dimensions.width40,left: Dimensions.width40),
-                    child: BigText(text: "Ir a pagar", color: Colors.white,),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Dimensions.radius20),
-                        color: AppColors.himalayaBlue
+                  child: Semantics(
+                    label: "Botón ir a pagar",
+                    child: Container(
+                      padding: EdgeInsets.only(top: Dimensions.height10,bottom: Dimensions.height10,right: Dimensions.width40,left: Dimensions.width40),
+                      child: BigText(text: "Ir a pagar", color: Colors.white,),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimensions.radius20),
+                          color: AppColors.himalayaBlue
+                      ),
                     ),
                   ),
                 )

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:himalayastoreapp/controllers/products_pager_view_controller.dart';
 import 'package:himalayastoreapp/pages/authenticate/sign_up_page.dart';
@@ -43,13 +44,13 @@ class _HomePageState extends State<HomePage> {
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.home),
+        icon: Semantics(label: "Botón Home de Menú",child: Icon(CupertinoIcons.home)),
         title: ("Home"),
         activeColorPrimary: AppColors.himalayaBlue,
         inactiveColorPrimary: AppColors.himalayaGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.archivebox),
+        icon: Semantics(label: "Botón Historial de Compras de Menú",child: Icon(CupertinoIcons.archivebox)),
         title: ("History"),
         activeColorPrimary: AppColors.himalayaBlue,
         inactiveColorPrimary: AppColors.himalayaGrey,
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
         icon: GetBuilder<CartController>(builder: (controller){
           return controller.items.length>0 ? Stack(
             children: [
-              Icon(CupertinoIcons.shopping_cart),
+              Semantics(label: "Botón Carrito de compras con ${controller.totalItems} items de Menú",child: Icon(CupertinoIcons.shopping_cart)),
               controller.totalItems>=1 ?
               Positioned(
                   right: 0,
@@ -91,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         inactiveColorPrimary: AppColors.himalayaGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.person),
+        icon: Semantics(label: "Botón Perfil de Usuario de Menú",child: Icon(CupertinoIcons.person)),
         title: ("Me"),
         activeColorPrimary: AppColors.himalayaBlue,
         inactiveColorPrimary: AppColors.himalayaGrey,

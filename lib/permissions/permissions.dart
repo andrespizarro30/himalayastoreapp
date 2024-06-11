@@ -1,4 +1,6 @@
+import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -98,6 +100,15 @@ Future<PermissionStatus> requestStoragePermissionIOS() async{
   if(permissionStatus.isDenied){
     await Permission.photos.request();
 
+    if(Platform.isAndroid){
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      if(androidInfo.version.sdkInt<29){
+        await Permission.storage.request();
+      }
+      permissionStatusCamera = await requestCameraPermission();
+    }
+
+
     if(permissionStatus.isGranted){
       permissionStatusCamera = await requestCameraPermission();
     }
@@ -110,6 +121,13 @@ Future<PermissionStatus> requestStoragePermissionIOS() async{
   }
 
   permissionStatus = await Permission.photos.status;
+
+  if(Platform.isAndroid){
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    if(androidInfo.version.sdkInt<29){
+      permissionStatus = await Permission.storage.status;
+    }
+  }
 
   return permissionStatus;
 

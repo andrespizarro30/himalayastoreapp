@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -76,12 +77,15 @@ class SignUpScreen extends StatelessWidget {
                 onTap: (){
                   controller.addTapCount();
                 },
-                child: Container(
-                  child: Center(
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: Dimensions.radius20 * 4,
-                      backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
+                child: Semantics(
+                  label: "Logo de Himalaya Mercado Saludable",
+                  child: Container(
+                    child: Center(
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: Dimensions.radius20 * 4,
+                        backgroundImage: AssetImage("assets/images/himalaya_logo.png"),
+                      ),
                     ),
                   ),
                 ),
@@ -139,43 +143,49 @@ class SignUpScreen extends StatelessWidget {
                 onTap: (){
                   _registration(controller);
                 },
-                child: Container(
-                  width: Dimensions.screenWidth/1.5,
-                  height: Dimensions.screenHeight/13,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius30),
-                      color: AppColors.himalayaBlue
-                  ),
-                  child: Center(
-                    child: BigText(
-                      text: "Registrarme",
-                      size: Dimensions.font20*1.5,
-                      color: Colors.white,
+                child: Semantics(
+                  label: "Botón registrarme",
+                  child: Container(
+                    width: Dimensions.screenWidth/1.5,
+                    height: Dimensions.screenHeight/13,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimensions.radius30),
+                        color: AppColors.himalayaBlue
+                    ),
+                    child: Center(
+                      child: BigText(
+                        text: "Registrarme",
+                        size: Dimensions.font20*1.5,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
               SizedBox(height: Dimensions.height10,),
-              RichText(
-                  text: TextSpan(
-                      recognizer: TapGestureRecognizer()..onTap=()=>Get.back(),
-                      text: "Ya tienes una cuenta? ",
-                      style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: Dimensions.font20
-                      ),
-                      children: [
-                        TextSpan(
-                            recognizer: TapGestureRecognizer()..onTap=()=>Get.back(),
-                            text: "Ingresa Aquí",
-                            style: TextStyle(
-                              color: AppColors.mainBlackColor,
-                              fontSize: Dimensions.font20,
-                              fontWeight: FontWeight.bold,
-                            )
-                        )
-                      ]
-                  )
+              Semantics(
+                label: "Ir a pantalla log in",
+                child: RichText(
+                    text: TextSpan(
+                        recognizer: TapGestureRecognizer()..onTap=()=>Get.back(),
+                        text: "Ya tienes una cuenta? ",
+                        style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: Dimensions.font20
+                        ),
+                        children: [
+                          TextSpan(
+                              recognizer: TapGestureRecognizer()..onTap=()=>Get.back(),
+                              text: "Ingresa Aquí",
+                              style: TextStyle(
+                                color: AppColors.mainBlackColor,
+                                fontSize: Dimensions.font20,
+                                fontWeight: FontWeight.bold,
+                              )
+                          )
+                        ]
+                    )
+                ),
               ),
               SizedBox(height: Dimensions.screenHeight*0.05,),
               RichText(
@@ -225,9 +235,12 @@ class SignUpScreen extends StatelessWidget {
                             });
                           }
                         },
-                        child: CircleAvatar(
-                          radius: Dimensions.radius20,
-                          backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                        child: Semantics(
+                          label: "Botón registrarse con red social",
+                          child: CircleAvatar(
+                            radius: Dimensions.radius20,
+                            backgroundImage: AssetImage("assets/images/${signUpImages[index]}"),
+                          ),
                         ),
                       ),
                     ),

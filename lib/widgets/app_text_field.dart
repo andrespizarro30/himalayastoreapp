@@ -39,34 +39,37 @@ class AppTextField extends StatelessWidget {
             )
           ]
       ),
-      child: TextField(
-        keyboardType: textInputType,
-        controller: textEditingController,
-        obscureText: isPassword,
-        maxLines: maxLines,
-        textAlignVertical: TextAlignVertical.center,
-        decoration: InputDecoration(
-          hintText: textHint,
-          prefixIcon: Icon(icon, color: AppColors.himalayaGrey,),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular((Dimensions.radius15)),
-            borderSide: BorderSide(
-                width: 1.0,
-                color: Colors.transparent
+      child: Semantics(
+        label: "Campo para agregar ${textHint} de usuario",
+        child: TextField(
+          keyboardType: textInputType,
+          controller: textEditingController,
+          obscureText: isPassword,
+          maxLines: maxLines,
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            hintText: textHint,
+            prefixIcon: Icon(icon, color: AppColors.himalayaGrey,),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular((Dimensions.radius15)),
+              borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.transparent
+              ),
             ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular((Dimensions.radius15)),
-            borderSide: BorderSide(
-                width: 1.0,
-                color: Colors.transparent
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular((Dimensions.radius15)),
+              borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.transparent
+              ),
             ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular((Dimensions.radius15)),
-            borderSide: BorderSide(
-                width: 1.0,
-                color: Colors.transparent
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular((Dimensions.radius15)),
+              borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.transparent
+              ),
             ),
           ),
         ),

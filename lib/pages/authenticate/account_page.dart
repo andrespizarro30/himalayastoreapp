@@ -53,19 +53,25 @@ class AccountScreen extends StatelessWidget {
                   Stack(
                     children: [
                       controller.profileImageURL.isNotEmpty ?
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        radius: 80,
-                        backgroundImage: NetworkImage(
-                          controller.profileImageURL,
+                      Semantics(
+                        label:"Imagen de usuario",
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 80,
+                          backgroundImage: NetworkImage(
+                            controller.profileImageURL,
+                          ),
                         ),
                       ):
-                      ApplIcon(
-                        icon: Icons.person,
-                        backgroundColor: AppColors.himalayaBlue,
-                        iconColor: Colors.white,
-                        iconSize: Dimensions.iconSize20 * 3.5,
-                        size: Dimensions.height30 * 5,
+                      Semantics(
+                        label:"Imagen de usuario",
+                        child: ApplIcon(
+                          icon: Icons.person,
+                          backgroundColor: AppColors.himalayaBlue,
+                          iconColor: Colors.white,
+                          iconSize: Dimensions.iconSize20 * 3.5,
+                          size: Dimensions.height30 * 5,
+                        ),
                       ),
                       Positioned(
                           right: Dimensions.width10,
@@ -303,34 +309,37 @@ class AccountScreen extends StatelessWidget {
               onTap: (){
                 Get.offNamed(RouteHelper.signIn);
               },
-              child: Container(
-                height: Dimensions.screenHeight * 0.05,
-                width: Dimensions.screenWidth * 0.9,
-                child: Center(child: Text("Realice el logging o cree una cuenta AQUÍ")),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(Dimensions.radius30),
-                        topRight: Radius.circular(Dimensions.radius30),
-                        bottomLeft: Radius.circular(Dimensions.radius30),
-                        bottomRight: Radius.circular(Dimensions.radius30)
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.himalayaGrey,
-                          blurRadius: 20.0,
-                          offset: Offset(0,-5)
+              child: Semantics(
+                label: "Botón ir a crear una cuenta",
+                child: Container(
+                  height: Dimensions.screenHeight * 0.05,
+                  width: Dimensions.screenWidth * 0.9,
+                  child: Center(child: Text("Realice el logging o cree una cuenta AQUÍ")),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(Dimensions.radius30),
+                          topRight: Radius.circular(Dimensions.radius30),
+                          bottomLeft: Radius.circular(Dimensions.radius30),
+                          bottomRight: Radius.circular(Dimensions.radius30)
                       ),
-                      BoxShadow(
-                          color: AppColors.himalayaBlue,
-                          blurRadius: 20.0,
-                          offset: Offset(0,5)
-                      ),
-                      BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(0,-5)
-                      )
-                    ]
+                      boxShadow: [
+                        BoxShadow(
+                            color: AppColors.himalayaGrey,
+                            blurRadius: 20.0,
+                            offset: Offset(0,-5)
+                        ),
+                        BoxShadow(
+                            color: AppColors.himalayaBlue,
+                            blurRadius: 20.0,
+                            offset: Offset(0,5)
+                        ),
+                        BoxShadow(
+                            color: Colors.white,
+                            offset: Offset(0,-5)
+                        )
+                      ]
+                  ),
                 ),
               ),
             )

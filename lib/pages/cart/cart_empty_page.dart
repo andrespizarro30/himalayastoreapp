@@ -13,25 +13,28 @@ class NoDataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Image.asset(
-            imgPath,
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width * 0.3,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
-          Text(
-            text,
-            style: TextStyle(
-                fontSize: MediaQuery.of(context).size.height*0.0175,
-                color: Theme.of(context).disabledColor
+      child: Semantics(
+        label: "Carrito de compras vacío",
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Image.asset(
+              imgPath,
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width * 0.3,
             ),
-            textAlign: TextAlign.center,
-          )
-        ],
+            SizedBox(height: MediaQuery.of(context).size.height * 0.03,),
+            Text(
+              text,
+              style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.height*0.0175,
+                  color: Theme.of(context).disabledColor
+              ),
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
       ),
     );
   }
