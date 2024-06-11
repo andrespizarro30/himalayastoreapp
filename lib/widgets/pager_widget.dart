@@ -39,6 +39,8 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
   double _scaleFactor = 0.8;
   double _height = Dimensions.pageViewContainer;
 
+  String a = "";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -89,7 +91,7 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
                               controller.selectCurrentProduct(index);
                               Get.toNamed(RouteHelper.getProductDetails(index.toString(),product_category));
                             }else{
-                              showCustomSnackBar("Producto no dispobible en el momento", title: "Sin Dispobilidad", backgroundColor: Colors.deepOrangeAccent);
+                              showCustomSnackBar("Producto no dispobible en el momento", title: "Sin Disponibilidad", backgroundColor: Colors.deepOrangeAccent);
                             }
                           },
                           child: Semantics(
