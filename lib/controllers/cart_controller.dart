@@ -398,7 +398,7 @@ class CartController extends GetxController{
 
     List<UsersModel> deliveiresReceivers = Get.find<ProductsPageController>().deliveriesReceiverList;
 
-    _isMessageSent = await cartRepo.sendNotificationToDeliveryReceiver(time.millisecondsSinceEpoch.toString(),deliveiresReceivers);
+    _isMessageSent = await cartRepo.sendNotificationToDeliveryReceiver2(time.millisecondsSinceEpoch.toString(),deliveiresReceivers);
 
     update();
 

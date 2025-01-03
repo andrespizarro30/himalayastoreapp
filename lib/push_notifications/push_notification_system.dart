@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:himalayastoreapp/models/instant_messages_model.dart';
-import 'package:himalayastoreapp/push_notifications/local_notification_service.dart';
 import 'package:himalayastoreapp/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../base/show_custom_message.dart';
@@ -98,9 +95,7 @@ class PushNotificationSystem{
     await FirebaseMessaging.instance.requestPermission();
 
     String? registrationToken = await messaging.getToken();
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
     sharedPreferences.setString(AppConstants.FIRESTORE_TOKENS, registrationToken!);
 
     print("FCM Registration Token: ");

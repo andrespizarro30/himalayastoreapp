@@ -39,8 +39,6 @@ class _PagerViewScreenState extends State<PagerViewScreen> {
   double _scaleFactor = 0.8;
   double _height = Dimensions.pageViewContainer;
 
-  String a = "";
-
   @override
   void initState() {
     // TODO: implement initState

@@ -116,7 +116,7 @@ class Data {
     banco = json['banco'];
     estado = json['estado'];
     respuesta = json['respuesta'];
-    autorizacion = json['autorizacion'];
+    autorizacion = json['autorizacion'].toString();
     recibo = json['recibo'];
     fecha = json['fecha'];
     franquicia = json['franquicia'];
@@ -136,7 +136,7 @@ class Data {
     extras =
     json['extras'] != null ? new Extras.fromJson(json['extras']) : null;
     ccNetworkResponse = json['cc_network_response'];
-    transactionID = json['transactionID'];
+    transactionID = json['transactionID'].toString();
     ticketId = json['ticketId'];
   }
 

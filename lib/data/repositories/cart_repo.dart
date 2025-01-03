@@ -371,6 +371,46 @@ class CartRepo extends GetxService{
 
   }
 
+  Future<bool> sendNotificationToDeliveryReceiver2(String deliveryId,List<UsersModel> deliveiresReceivers) async{
+
+    var accessToken = sharedPreferences.get("fcmAccessToken");
+
+    final headers = {
+      'Host': 'fcm.googleapis.com',
+      'content-type': 'application/json',
+      'Authorization': 'Bearer ${accessToken}'
+    };
+
+    Map<String,dynamic> body = {
+      "message":{
+        "notification":{
+          "body": "Nuevo pedido recibido",
+          "title": "Tienda Himalaya"
+        },
+        "data": {
+          "DeliveryUID": deliveryId,
+          "DeliveryId": firebaseAuth.currentUser!.uid!,
+          "DeliveryUserName": firebaseAuth.currentUser!.displayName!.split(";")[0],
+          "DeliveryCity": Get.find<MainPageController>().currentAddressDetailModel.cityCountryAddress
+        },
+        "token": deliveiresReceivers[0].userToken
+      }
+    };
+
+    var bodyEncoded = json.encode(body);
+
+    String url="https://fcm.googleapis.com/v1/projects/himalayastoreapp/messages:send";
+
+    final response = await http.post(Uri.parse(url),headers: headers,body: bodyEncoded,encoding: Encoding.getByName('utf-8'));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
 
 
 }
